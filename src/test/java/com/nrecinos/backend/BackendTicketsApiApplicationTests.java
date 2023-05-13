@@ -1,4 +1,4 @@
-package com.nrecinos.library;
+package com.nrecinos.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
