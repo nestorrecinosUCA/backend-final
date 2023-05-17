@@ -9,22 +9,20 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class UpdateUserDto {
-@Size()
+@Size(max = 25, message = "Name is bigger than allowed")
 String name;
 
-@Size()
+@Size(max = 25, message = "Lastname is bigger than allowed")
 String lastname;
 
-@Size()
+@Size(min = 8, max = 11, message = "Phon number must be between 8 and 11 digits")
 String phoneNumber;
 
-@Size()
 @Email()
 String email;
 
-@Size()
+@Size(min = 8, max = 25, message = "Password must be between 8 and 25 digits")
 String password;
 
-@Size()
 String username;
 }
