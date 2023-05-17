@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nrecinos.backend.models.dto.user.CreateUserDto;
+import com.nrecinos.backend.models.dto.user.UpdateUserDto;
 
 import jakarta.validation.Valid;
 
@@ -40,8 +41,11 @@ public class UserController {
 	}
 	
 	@PatchMapping("/{id}")
-	String update(@PathVariable(name = "id") Integer id) {
-		return "Update user with id " + id;
+	ResponseEntity<?> update(@PathVariable(name = "id") Integer id, @RequestBody @Valid UpdateUserDto updateteUserDto, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>("Updated Successfully", HttpStatus.ACCEPTED);
 	}
 	
 	@DeleteMapping("/{id}")
