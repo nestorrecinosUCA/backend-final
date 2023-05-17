@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nrecinos.backend.models.dtos.user.CreateUserDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
+import com.nrecinos.backend.models.entities.user.UserEntity;
 
 import jakarta.validation.Valid;
 
@@ -23,13 +24,18 @@ import jakarta.validation.Valid;
 @RequestMapping("/users")
 public class UserController {
 	@GetMapping("/")
-	String getAllUsers() {
-		return "All users";
+	ResponseEntity<?> getAllUsers() {
+		// TODO: update with service method and create variable
+		return new ResponseEntity<>("All users", HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	String getOne(@PathVariable(name = "id") Integer id){
-		return "Single user with id: " + id;
+	ResponseEntity<?> getOne(@PathVariable(name = "id") Integer id){
+		UserEntity user = null; // TODO: Update with service method
+		if (user == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>("Single user with id: " + id, HttpStatus.OK);
 	}
 	
 	@PostMapping("/")
@@ -45,11 +51,11 @@ public class UserController {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>("Updated Successfully", HttpStatus.ACCEPTED);
+		return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
-	String delete(@PathVariable(name = "id") Integer id) {
-		return "Delete user with Id: " + id;
+	ResponseEntity<?> delete(@PathVariable(name = "id") Integer id) {
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
