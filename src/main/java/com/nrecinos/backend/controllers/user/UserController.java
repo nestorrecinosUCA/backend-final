@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nrecinos.backend.models.dtos.user.CreateUserDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
+import com.nrecinos.backend.models.dtos.user.UserInformationDto;
 import com.nrecinos.backend.models.entities.user.UserEntity;
 
 import jakarta.validation.Valid;
@@ -31,7 +32,7 @@ public class UserController {
 	
 	@GetMapping("/{id}")
 	ResponseEntity<?> getOne(@PathVariable(name = "id") Integer id){
-		UserEntity user = null; // TODO: Update with service method
+		UserInformationDto user = null; // TODO: Update with service method
 		if (user == null) {
 			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 		}
