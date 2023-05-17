@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nrecinos.backend.models.dto.user.CreateUserDto;
-import com.nrecinos.backend.models.dto.user.UpdateUserDto;
+import com.nrecinos.backend.models.dtos.user.CreateUserDto;
+import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
 
 import jakarta.validation.Valid;
 
