@@ -39,4 +39,5 @@ public class CreateEventDto {
 
 	@NotEmpty(message = "categoryId must not be empty")
 	Integer categoryId;
+
 }
