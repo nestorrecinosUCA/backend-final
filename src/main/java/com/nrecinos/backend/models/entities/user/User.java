@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserEntity {
+public class User {
 	String name;
 	String lastname;
 	String phoneNumber;
