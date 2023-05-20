@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nrecinos.backend.models.dtos.event.CreateEventDto;
+import com.nrecinos.backend.models.dtos.event.EventInformationDto;
+import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
 
 import jakarta.validation.Valid;
 
@@ -20,13 +22,18 @@ import jakarta.validation.Valid;
 @RequestMapping("/events")
 public class EventController {
 	@GetMapping("/")
-	String getAll() {
-		return "All events";
+	ResponseEntity<?> getAll() {
+		// TODO: update with service method and create variable
+		return new ResponseEntity<>("All users", HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	String getOneById() {
-		return "a single event";
+	ResponseEntity<?> getOne(@PathVariable(name = "id")Integer id){
+		EventInformationDto event = null; // TODO: update with service
+		if(event == null) {
+			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>("Single event with id: " + id, HttpStatus.OK);
 	}
 	
 	@PostMapping("/")
@@ -38,8 +45,11 @@ public class EventController {
 	}
 
 	@PatchMapping("/{id}")
-	String update() {
-		return "Update event";
+	ResponseEntity<?> update(@RequestBody @Valid UpdateUserDto updateUserDto, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
