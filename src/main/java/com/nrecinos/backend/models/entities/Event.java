@@ -1,4 +1,4 @@
-package com.nrecinos.backend.models.entities.event;
+package com.nrecinos.backend.models.entities;
 
 import java.util.Date;
 

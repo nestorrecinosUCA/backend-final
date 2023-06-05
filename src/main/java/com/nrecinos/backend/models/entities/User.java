@@ -1,4 +1,4 @@
-package com.nrecinos.backend.models.entities.user;
+package com.nrecinos.backend.models.entities;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
