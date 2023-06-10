@@ -1,13 +1,13 @@
-package com.nrecinos.backend.models.entities;
+package com.nrecinos.backend.models.entities.rol;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Staff {
+public class Rol {
 	Integer id;
 	String name;
-	String type;
-	Integer eventId;
+	String description;
+	Integer userId;
 }

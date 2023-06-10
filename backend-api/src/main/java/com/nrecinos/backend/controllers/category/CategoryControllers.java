@@ -1,4 +1,4 @@
-package com.nrecinos.backend.controllers;
+package com.nrecinos.backend.controllers.category;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/sponsor")
-public class SponsorController {
+@RequestMapping("/category")
+public class CategoryControllers {
 
 	@PostMapping("/")
-	ResponseEntity<?> create(@RequestBody @Valid CreateSponsorDto craeteSponsorDto, BindingResult validations){
+	ResponseEntity<?> create(@RequestBody @Valid CreateCategoryDto craeteCategoryDto, BindingResult validations){
 		if(validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
@@ -28,24 +28,24 @@ public class SponsorController {
 	
 	@GetMapping("/")
 	ResponseEntity<?> getAll(){
-		//List<Sponsor> sponsor = sponsorService.getAll();
-		//if(sponsor == null) {
+		//List<Category> category = categoryService.getAll();
+		//if(category == null) {
 		//	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		//}
-		return new ResponseEntity<>("All Sponsor", HttpStatus.OK);
+		return new ResponseEntity<>("All category", HttpStatus.OK);
 	} 
 	
 	@GetMapping("/{code}")
-	ResponseEntity<?> getSponsorById(@PathVariable(name = "code") Integer code){
-		SponsorInfoDto tier = null; //TODO: Update with service method
-		if(tier == null) {
-			return new ResponseEntity<>("Sponsor not Found", HttpStatus.NOT_FOUND);
+	ResponseEntity<?> getCategoryById(@PathVariable(name = "code") Integer code){
+		CategoryInfoDto category = null; //TODO: Update with service method
+		if(category == null) {
+			return new ResponseEntity<>("Category not Found", HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@PatchMapping("/{code}")
-	ResponseEntity<?> updateSponsor(@PathVariable(name = "code") Integer code, @RequestBody @Valid UpdateSponsorDto updateSponsorDto, BindingResult validations){
+	ResponseEntity<?> updateCatgeory(@PathVariable(name = "code") Integer code, @RequestBody @Valid UpdateCategoryDto updateCategoryDto, BindingResult validations){
 		if(validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}

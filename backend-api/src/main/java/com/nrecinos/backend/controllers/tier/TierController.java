@@ -1,4 +1,4 @@
-package com.nrecinos.backend.controllers;
+package com.nrecinos.backend.controllers.tier;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

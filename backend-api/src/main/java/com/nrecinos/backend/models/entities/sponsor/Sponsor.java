@@ -1,13 +1,13 @@
-package com.nrecinos.backend.models.entities;
+package com.nrecinos.backend.models.entities.sponsor;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Rol {
+public class Sponsor {
 	Integer id;
 	String name;
-	String description;
-	Integer userId;
+	Integer eventId;
+	
 }
