@@ -2,7 +2,7 @@ package com.nrecinos.backend.models.dtos.event;
 
 import java.util.Date;
 
-public class EventInformationDto {
+public class EventInfoDto {
 	String title;
 	String description;
 	Date date;
