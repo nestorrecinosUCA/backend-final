@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nrecinos.backend.models.dtos.tier.CreateTierDto;
+import com.nrecinos.backend.models.dtos.tier.TierInfoDto;
+import com.nrecinos.backend.models.dtos.tier.UpdateTierDto;
+
 import jakarta.validation.Valid;
 
 @RestController
