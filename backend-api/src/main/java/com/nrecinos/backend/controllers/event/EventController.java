@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nrecinos.backend.models.dtos.event.CreateEventDto;
-import com.nrecinos.backend.models.dtos.event.EventInformationDto;
+import com.nrecinos.backend.models.dtos.event.EventInfoDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
 
 import jakarta.validation.Valid;
@@ -29,7 +29,7 @@ public class EventController {
 	
 	@GetMapping("/{id}")
 	ResponseEntity<?> getOne(@PathVariable(name = "id")Integer id){
-		EventInformationDto event = null; // TODO: update with service
+		EventInfoDto event = null; // TODO: update with service
 		if(event == null) {
 			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
 		}
