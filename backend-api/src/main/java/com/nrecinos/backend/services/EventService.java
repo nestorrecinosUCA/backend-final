@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.nrecinos.backend.models.dtos.event.CreateEventDto;
 import com.nrecinos.backend.models.dtos.event.EventInfoDto;
+import com.nrecinos.backend.models.dtos.event.UpdateEventDto;
 import com.nrecinos.backend.models.entities.event.Event;
 
 public interface EventService {
@@ -11,6 +12,6 @@ public interface EventService {
 	Event save(Event category);
 	List<Event> findAll();
 	EventInfoDto findOne(Integer code);
-	EventInfoDto update(Integer code);
+	EventInfoDto update(Integer code, UpdateEventDto updateEventDto);
 	void delete(Integer code);
 }
