@@ -1,6 +1,4 @@
-package com.nrecinos.backend.models.entities.event;
-
-import java.util.Date;
+package com.nrecinos.backend.models.entities.voucher;
 
 import com.nrecinos.backend.models.entities.user.User;
 
@@ -16,42 +14,20 @@ import jakarta.persistence.Table;
 import lombok.ToString;
 
 @Entity
-@Table(name = "event")
-public class Event {
+@Table(name = "voucher")
+public class Voucher {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
 	
-	@Column(name = "title")
-	String title;
+	@Column(name = "quantity")
+	Integer quantity;
 	
-	@Column(name = "description")
-	String description;
-	
-	@Column(name = "date")
-	Date date;
-	
-	@Column(name = "hour")
-	String hour;
-	
-	@Column(name = "duration")
-	Float duration;
-	
-	@Column(name = "is_active")
-	Boolean isActive;
-	
-	@Column(name = "assistants")
-	Integer assistants;
-	
-	@Column(name = "assistants_capacity")
-	Integer assistantsCapacity;
-	// TODO Update relationships
+	@Column(name = "total")
+	Integer total;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "userId")
 	@ToString.Exclude
 	private User user;
-
-	Integer tierId;
-	Integer categoryId;
 }

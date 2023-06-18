@@ -13,5 +13,6 @@ public interface UserService {
 	List<User> findAll();
 	UserInfoDto findOne(Integer code);
 	UserInfoDto update(Integer code, UpdateUserDto updateCategoryDto);
+	UserInfoDto updateStatus(Integer code);
 	void delete(Integer code);
 }
