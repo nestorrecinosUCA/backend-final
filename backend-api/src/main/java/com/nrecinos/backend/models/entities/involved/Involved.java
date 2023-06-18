@@ -1,4 +1,4 @@
-package com.nrecinos.backend.models.entities.sponsor;
+package com.nrecinos.backend.models.entities.involved;
 
 import com.nrecinos.backend.models.entities.event.Event;
 
@@ -14,14 +14,17 @@ import jakarta.persistence.Table;
 import lombok.ToString;
 
 @Entity
-@Table(name = "sponsor")
-public class Sponsor {
+@Table(name = "involved")
+public class Involved {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
 	
 	@Column(name = "name")
 	String name;
+	
+	@Column(name = "type")
+	String type;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "eventId")
