@@ -21,30 +21,29 @@ import jakarta.persistence.Table;
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Integer id;
 	
 	@Column(name = "name")
-	String name;
+	private String name;
 
 	@Column(name = "lastname")
-	String lastname;
+	private String lastname;
 
 	@Column(name = "phone_number")
-	String phoneNumber;
+	private String phoneNumber;
 
 	@Column(name = "email")
-	String email;
+	private String email;
 
 	@Column(name = "password")
-	String password;
+	private String password;
 
 	@Column(name = "username")
-	String username;
+	private String username;
 
 	@Column(name = "is_verified")
-	Boolean isVerified;
+	private Boolean isVerified;
 
-	// TODO Add valid relationship when these modules are added
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<UsersXRoles> usersXRole;
@@ -56,5 +55,4 @@ public class User {
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Voucher> voucher;
-	
 }

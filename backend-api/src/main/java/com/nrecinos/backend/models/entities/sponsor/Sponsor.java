@@ -18,10 +18,10 @@ import lombok.ToString;
 public class Sponsor {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Integer id;
 	
 	@Column(name = "name")
-	String name;
+	private String name;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "eventId")

@@ -19,13 +19,13 @@ import jakarta.persistence.Table;
 public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Integer id;
 
 	@Column(name = "name")
-	String name;
+	private String name;
 	
 	@Column(name = "description")
-	String description;
+	private String description;
 	
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
 	@JsonIgnore

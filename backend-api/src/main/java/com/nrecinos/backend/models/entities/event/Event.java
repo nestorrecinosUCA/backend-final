@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nrecinos.backend.models.entities.category.Category;
 import com.nrecinos.backend.models.entities.involved.Involved;
 import com.nrecinos.backend.models.entities.sponsor.Sponsor;
+import com.nrecinos.backend.models.entities.tier.Tier;
 import com.nrecinos.backend.models.entities.user.User;
 
 import jakarta.persistence.Column;
@@ -26,32 +27,31 @@ import lombok.ToString;
 public class Event {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Integer id;
 	
 	@Column(name = "title")
-	String title;
+	private String title;
 	
 	@Column(name = "description")
-	String description;
+	private String description;
 	
 	@Column(name = "date")
-	Date date;
+	private Date date;
 	
 	@Column(name = "hour")
-	String hour;
+	private String hour;
 	
 	@Column(name = "duration")
-	Float duration;
+	private Float duration;
 	
 	@Column(name = "is_active")
-	Boolean isActive;
+	private Boolean isActive;
 	
 	@Column(name = "assistants")
-	Integer assistants;
+	private Integer assistants;
 	
 	@Column(name = "assistants_capacity")
-	Integer assistantsCapacity;
-	// TODO Update relationships
+	private Integer assistantsCapacity;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "userId")
@@ -71,5 +71,7 @@ public class Event {
 	@JsonIgnore
 	private List<Involved> involved;
 	
-	Integer tierId;
+	@OneToMany(mappedBy = "event")
+	@JsonIgnore
+	private List<Tier> tiers;
 }

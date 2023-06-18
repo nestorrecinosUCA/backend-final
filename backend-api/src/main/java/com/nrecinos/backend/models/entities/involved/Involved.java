@@ -18,13 +18,13 @@ import lombok.ToString;
 public class Involved {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Integer id;
 	
 	@Column(name = "name")
-	String name;
+	private String name;
 	
 	@Column(name = "type")
-	String type;
+	private String type;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "eventId")
