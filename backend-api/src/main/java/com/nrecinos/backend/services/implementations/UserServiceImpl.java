@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public UserInfoDto create(CreateUserDto createUserDto) {
-		User createUser = new User(createUserDto.getName(), createUserDto.getLastname(), createUserDto.getPhoneNumber(), createUserDto.getEmail(), passwordEncoder.encode(createUserDto.getPassword()), createUserDto.getUsername());
+		User createUser = new User(createUserDto.getName(), createUserDto.getLastname(), createUserDto.getPhoneNumber(), createUserDto.getEmail(), passwordEncoder.encode(createUserDto.getPassword()), createUserDto.getUsername(), false);
 		User saveUser = this.save(createUser);
 		UserInfoDto userInfo = this.serializeUserInfoDto(saveUser);
 		return userInfo;
@@ -78,7 +78,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserInfoDto findByEmailOrUsername(String email, String username) {
 		User user = userRepository.findByUsernameOrEmail(username, email);
-		return this.serializeUserInfoDto(user);
+		if (user != null) {			
+			return this.serializeUserInfoDto(user);
+		}
+		return null;
 	}
 
 }
