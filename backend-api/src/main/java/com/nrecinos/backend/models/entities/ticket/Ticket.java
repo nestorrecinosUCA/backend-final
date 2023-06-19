@@ -1,5 +1,9 @@
 package com.nrecinos.backend.models.entities.ticket;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nrecinos.backend.models.entities.tickets_tiers_tier.TicketsXTiers;
 import com.nrecinos.backend.models.entities.voucher.Voucher;
 
 import jakarta.persistence.Column;
@@ -10,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.ToString;
 
@@ -30,6 +35,15 @@ public class Ticket {
 	@JoinColumn(name = "ticketId")
 	@ToString.Exclude
 	private Voucher voucher;
-	// FALTA EDITAR LA RELACION Y TABLA ENTRE TIERS Y TICKETS
-	Integer tierId;
+	
+	@OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<TicketsXTiers> ticketsXTiers;
+
+	public Ticket(String title, String description, Voucher voucher) {
+		super();
+		this.title = title;
+		this.description = description;
+		this.voucher = voucher;
+	}
 }

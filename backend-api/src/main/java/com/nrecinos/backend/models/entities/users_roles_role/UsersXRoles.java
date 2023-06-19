@@ -29,9 +29,10 @@ public class UsersXRoles {
 	@JoinColumn(name = "roleId")
 	@ToString.Exclude
 	private Role role;
-	
-	public UsersXRoles(Role role, User user) {
-		this.role = role;
+
+	public UsersXRoles(User user, Role role) {
+		super();
 		this.user = user;
+		this.role = role;
 	}
 }

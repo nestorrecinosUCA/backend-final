@@ -54,5 +54,17 @@ public class User {
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<Voucher> voucher;
+	private List<Voucher> vouchers;
+
+	public User(String name, String lastname, String phoneNumber, String email, String password, String username,
+			Boolean isVerified) {
+		super();
+		this.name = name;
+		this.lastname = lastname;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+		this.password = password;
+		this.username = username;
+		this.isVerified = isVerified;
+	}
 }

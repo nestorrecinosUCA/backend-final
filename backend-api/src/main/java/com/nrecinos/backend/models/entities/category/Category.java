@@ -30,4 +30,10 @@ public class Category {
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Event> events;
+
+	public Category(String name, String description) {
+		super();
+		this.name = name;
+		this.description = description;
+	}
 }

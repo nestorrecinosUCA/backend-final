@@ -27,4 +27,10 @@ public class Sponsor {
 	@JoinColumn(name = "eventId")
 	@ToString.Exclude
 	private Event event;
+
+	public Sponsor(String name, Event event) {
+		super();
+		this.name = name;
+		this.event = event;
+	}
 }

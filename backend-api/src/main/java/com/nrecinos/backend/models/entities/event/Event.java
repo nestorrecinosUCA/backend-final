@@ -74,4 +74,19 @@ public class Event {
 	@OneToMany(mappedBy = "event")
 	@JsonIgnore
 	private List<Tier> tiers;
+	
+	public Event(String title, String description, Date date, String hour, Float duration, Boolean isActive,
+			Integer assistants, Integer assistantsCapacity, User user, Category category) {
+		super();
+		this.title = title;
+		this.description = description;
+		this.date = date;
+		this.hour = hour;
+		this.duration = duration;
+		this.isActive = isActive;
+		this.assistants = assistants;
+		this.assistantsCapacity = assistantsCapacity;
+		this.user = user;
+		this.category = category;
+	}
 }

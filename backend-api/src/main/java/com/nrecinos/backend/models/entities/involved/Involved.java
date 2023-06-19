@@ -30,4 +30,11 @@ public class Involved {
 	@JoinColumn(name = "eventId")
 	@ToString.Exclude
 	private Event event;
+
+	public Involved(String name, String type, Event event) {
+		super();
+		this.name = name;
+		this.type = type;
+		this.event = event;
+	}
 }

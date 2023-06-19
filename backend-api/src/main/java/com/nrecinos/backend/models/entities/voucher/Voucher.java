@@ -39,4 +39,11 @@ public class Voucher {
 	@OneToMany(mappedBy = "voucher", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Ticket> tickets;
+
+	public Voucher(Integer quantity, Integer total, User user) {
+		super();
+		this.quantity = quantity;
+		this.total = total;
+		this.user = user;
+	}
 }
