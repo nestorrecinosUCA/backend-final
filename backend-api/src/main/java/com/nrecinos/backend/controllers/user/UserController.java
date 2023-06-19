@@ -1,5 +1,6 @@
 package com.nrecinos.backend.controllers.user;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class UserController {
 	
 	@GetMapping("/")
 	ResponseEntity<?> getAllUsers() {
-		List<User> users = userService.findAll();
+		List<UserInfoDto> users = userService.findAll();
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	

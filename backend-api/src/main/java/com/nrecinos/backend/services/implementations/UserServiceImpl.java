@@ -30,9 +30,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> findAll() {
+	public List<UserInfoDto> findAll() {
 		List<User> users = userRepository.findAll();
-		return users;
+		List<UserInfoDto> usersInfoDto = users.stream()
+				.map(u -> new UserInfoDto(u.getName(), u.getLastname(), u.getPhoneNumber(), u.getEmail(), u.getUsername(), u.getIsVerified())).toList();
+		return usersInfoDto;
 	}
 
 	@Override
