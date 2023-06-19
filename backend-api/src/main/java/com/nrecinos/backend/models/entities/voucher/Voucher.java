@@ -1,10 +1,10 @@
-package com.nrecinos.backend.models.entities.ticket;
+package com.nrecinos.backend.models.entities.voucher;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nrecinos.backend.models.entities.tickets_tiers_tier.TicketsXTiers;
-import com.nrecinos.backend.models.entities.voucher.Voucher;
+import com.nrecinos.backend.models.entities.ticket.Ticket;
+import com.nrecinos.backend.models.entities.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,31 +19,31 @@ import jakarta.persistence.Table;
 import lombok.ToString;
 
 @Entity
-@Table(name = "ticket")
-public class Ticket {
+@Table(name = "voucher")
+public class Voucher {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name = "title")
-	private String title;
+	@Column(name = "quantity")
+	private Integer quantity;
 	
-	@Column(name = "description")
-	private String description;
+	@Column(name = "total")
+	private Integer total;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ticketId")
+	@JoinColumn(name = "userId")
 	@ToString.Exclude
-	private Voucher voucher;
+	private User user;
 	
-	@OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "voucher", fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<TicketsXTiers> ticketsXTiers;
+	private List<Ticket> tickets;
 
-	public Ticket(String title, String description, Voucher voucher) {
+	public Voucher(Integer quantity, Integer total, User user) {
 		super();
-		this.title = title;
-		this.description = description;
-		this.voucher = voucher;
+		this.quantity = quantity;
+		this.total = total;
+		this.user = user;
 	}
 }

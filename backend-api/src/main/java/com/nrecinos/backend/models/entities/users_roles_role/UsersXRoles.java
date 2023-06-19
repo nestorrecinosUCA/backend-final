@@ -1,8 +1,8 @@
-package com.nrecinos.backend.models.entities.sponsor;
+package com.nrecinos.backend.models.entities.users_roles_role;
 
-import com.nrecinos.backend.models.entities.event.Event;
+import com.nrecinos.backend.models.entities.role.Role;
+import com.nrecinos.backend.models.entities.user.User;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -14,23 +14,25 @@ import jakarta.persistence.Table;
 import lombok.ToString;
 
 @Entity
-@Table(name = "sponsor")
-public class Sponsor {
+@Table(name = "user_roles_role")
+public class UsersXRoles {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name = "name")
-	private String name;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "userId")
+	@ToString.Exclude
+	private User user;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "eventId")
+	@JoinColumn(name = "roleId")
 	@ToString.Exclude
-	private Event event;
+	private Role role;
 
-	public Sponsor(String name, Event event) {
+	public UsersXRoles(User user, Role role) {
 		super();
-		this.name = name;
-		this.event = event;
+		this.user = user;
+		this.role = role;
 	}
 }

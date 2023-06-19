@@ -1,9 +1,9 @@
-package com.nrecinos.backend.models.entities.category;
+package com.nrecinos.backend.models.entities.role;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nrecinos.backend.models.entities.event.Event;
+import com.nrecinos.backend.models.entities.users_roles_role.UsersXRoles;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,27 +13,30 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @Entity
-@Table(name = "voucher")
-public class Category {
+@Table(name = "role")
+public class Role {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-
+	Integer id;
+	
 	@Column(name = "name")
-	private String name;
+	String name;
 	
 	@Column(name = "description")
-	private String description;
+	String description;
 	
-	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<Event> events;
+	private List<UsersXRoles> usersXRole;
 
-	public Category(String name, String description) {
+	public Role(String name, String description) {
 		super();
 		this.name = name;
 		this.description = description;
 	}
+	
 }
