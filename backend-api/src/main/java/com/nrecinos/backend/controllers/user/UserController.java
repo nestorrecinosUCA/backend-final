@@ -1,5 +1,8 @@
 package com.nrecinos.backend.controllers.user;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,8 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nrecinos.backend.models.dtos.user.CreateUserDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
-import com.nrecinos.backend.models.dtos.user.UserInformationDto;
-import com.nrecinos.backend.models.entities.user.UserEntity;
+import com.nrecinos.backend.models.dtos.user.UserInfoDto;
+import com.nrecinos.backend.models.entities.user.User;
+import com.nrecinos.backend.services.UserService;
 
 import jakarta.validation.Valid;
 
@@ -24,19 +28,22 @@ import jakarta.validation.Valid;
 @CrossOrigin("*")
 @RequestMapping("/users")
 public class UserController {
+	@Autowired
+	UserService userService;
+	
 	@GetMapping("/")
 	ResponseEntity<?> getAllUsers() {
-		// TODO: update with service method and create variable
-		return new ResponseEntity<>("All users", HttpStatus.OK);
+		List<User> users = userService.findAll();
+		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
 	ResponseEntity<?> getOne(@PathVariable(name = "id") Integer id){
-		UserInformationDto user = null; // TODO: Update with service method
+		UserInfoDto user = userService.findOne(id); // TODO: Update with service method
 		if (user == null) {
 			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>("Single user with id: " + id, HttpStatus.OK);
+		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 	
 	@PostMapping("/")

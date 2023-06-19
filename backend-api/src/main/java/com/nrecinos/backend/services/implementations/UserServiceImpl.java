@@ -2,14 +2,21 @@ package com.nrecinos.backend.services.implementations;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.nrecinos.backend.models.dtos.user.CreateUserDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
 import com.nrecinos.backend.models.dtos.user.UserInfoDto;
 import com.nrecinos.backend.models.entities.user.User;
+import com.nrecinos.backend.repositories.UserRepository;
 import com.nrecinos.backend.services.UserService;
 
+@Service
 public class UserServiceImpl implements UserService {
-
+	@Autowired
+	private UserRepository userRepository;
+	
 	@Override
 	public UserInfoDto create(CreateUserDto createCategoryDto) {
 		// TODO Auto-generated method stub
@@ -24,14 +31,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		List<User> users = userRepository.findAll();
+		return users;
 	}
 
 	@Override
 	public UserInfoDto findOne(Integer code) {
-		// TODO Auto-generated method stub
-		return null;
+		User user = userRepository.findOneById(code);
+		if (user == null) {
+			return null;
+		}
+		UserInfoDto userInfo = new UserInfoDto(user.getName(), user.getLastname(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getIsVerified());
+		return userInfo;
 	}
 
 	@Override
