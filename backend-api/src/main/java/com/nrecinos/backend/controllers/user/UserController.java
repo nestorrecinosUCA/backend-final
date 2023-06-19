@@ -1,6 +1,5 @@
 package com.nrecinos.backend.controllers.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,7 @@ import jakarta.validation.Valid;
 @CrossOrigin("*")
 @RequestMapping("/users")
 public class UserController {
+
 	@Autowired
 	UserService userService;
 	
@@ -52,7 +52,13 @@ public class UserController {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		UserInfoDto existingUser = userService.findByEmailOrUsername(createUserDto.getEmail(), createUserDto.getUsername());
+		if (existingUser != null) {
+			return new ResponseEntity<>("This email or username has already been registered", HttpStatus.BAD_REQUEST);
+		}
+		
+		UserInfoDto newUser = userService.create(createUserDto);
+		return new ResponseEntity<>(newUser, HttpStatus.CREATED);
 	}
 	
 	@PatchMapping("/{id}")

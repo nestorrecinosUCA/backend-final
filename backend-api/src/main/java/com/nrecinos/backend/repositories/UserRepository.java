@@ -6,4 +6,5 @@ import com.nrecinos.backend.models.entities.user.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 	User findOneById(Integer id);
+	User findByUsernameOrEmail(String username, String email);
 }

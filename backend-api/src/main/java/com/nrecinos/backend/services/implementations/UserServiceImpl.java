@@ -3,6 +3,7 @@ package com.nrecinos.backend.services.implementations;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nrecinos.backend.models.dtos.user.CreateUserDto;
@@ -17,23 +18,27 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	public PasswordEncoder passwordEncoder;
+	
 	@Override
-	public UserInfoDto create(CreateUserDto createCategoryDto) {
-		// TODO Auto-generated method stub
-		return null;
+	public UserInfoDto create(CreateUserDto createUserDto) {
+		User createUser = new User(createUserDto.getName(), createUserDto.getLastname(), createUserDto.getPhoneNumber(), createUserDto.getEmail(), passwordEncoder.encode(createUserDto.getPassword()), createUserDto.getUsername());
+		User saveUser = this.save(createUser);
+		UserInfoDto userInfo = this.serializeUserInfoDto(saveUser);
+		return userInfo;
 	}
 
 	@Override
-	public User save(User category) {
-		// TODO Auto-generated method stub
-		return null;
+	public User save(User user) {
+		return userRepository.save(user);
 	}
 
 	@Override
 	public List<UserInfoDto> findAll() {
 		List<User> users = userRepository.findAll();
 		List<UserInfoDto> usersInfoDto = users.stream()
-				.map(u -> new UserInfoDto(u.getName(), u.getLastname(), u.getPhoneNumber(), u.getEmail(), u.getUsername(), u.getIsVerified())).toList();
+				.map(u -> this.serializeUserInfoDto(u)).toList();
 		return usersInfoDto;
 	}
 
@@ -43,7 +48,7 @@ public class UserServiceImpl implements UserService {
 		if (user == null) {
 			return null;
 		}
-		UserInfoDto userInfo = new UserInfoDto(user.getName(), user.getLastname(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getIsVerified());
+		UserInfoDto userInfo = this.serializeUserInfoDto(user);
 		return userInfo;
 	}
 
@@ -63,6 +68,17 @@ public class UserServiceImpl implements UserService {
 	public void delete(Integer code) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public UserInfoDto serializeUserInfoDto(User user) {
+		return new UserInfoDto(user.getName(), user.getLastname(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getIsVerified());
+	}
+
+	@Override
+	public UserInfoDto findByEmailOrUsername(String email, String username) {
+		User user = userRepository.findByUsernameOrEmail(username, email);
+		return this.serializeUserInfoDto(user);
 	}
 
 }
