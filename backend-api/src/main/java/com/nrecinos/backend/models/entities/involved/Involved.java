@@ -1,4 +1,4 @@
-package com.nrecinos.backend.models.entities.sponsor;
+package com.nrecinos.backend.models.entities.involved;
 
 import com.nrecinos.backend.models.entities.event.Event;
 
@@ -14,8 +14,8 @@ import jakarta.persistence.Table;
 import lombok.ToString;
 
 @Entity
-@Table(name = "sponsor")
-public class Sponsor {
+@Table(name = "involved")
+public class Involved {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -23,14 +23,18 @@ public class Sponsor {
 	@Column(name = "name")
 	private String name;
 	
+	@Column(name = "type")
+	private String type;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "eventId")
 	@ToString.Exclude
 	private Event event;
 
-	public Sponsor(String name, Event event) {
+	public Involved(String name, String type, Event event) {
 		super();
 		this.name = name;
+		this.type = type;
 		this.event = event;
 	}
 }
