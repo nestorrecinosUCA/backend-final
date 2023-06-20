@@ -88,8 +88,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void delete(Integer code) {
-		// TODO Auto-generated method stub
+	public void delete(Integer id) {
+		userRepository.deleteById(id);
 		
 	}
 
@@ -105,6 +105,13 @@ public class UserServiceImpl implements UserService {
 			return this.serializeUserInfoDto(user);
 		}
 		return null;
+	}
+	
+	@Override
+	public String updatePassword(Integer id, String password) {
+		User userToUpdate = userRepository.findOneById(id);
+		userToUpdate.setPassword(passwordEncoder.encode(password));
+		return "Password updated successfully";
 	}
 
 }

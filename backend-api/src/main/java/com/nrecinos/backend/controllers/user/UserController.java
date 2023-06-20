@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nrecinos.backend.models.dtos.user.CreateUserDto;
+import com.nrecinos.backend.models.dtos.user.UpdatePasswordDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
 import com.nrecinos.backend.models.dtos.user.UserInfoDto;
 import com.nrecinos.backend.models.entities.user.User;
@@ -66,8 +67,11 @@ public class UserController {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		UserInfoDto existingUser = userService.findByEmailOrUsername(updateUserDto.getEmail(), updateUserDto.getUsername());
-		if (existingUser != null) {
+		UserInfoDto existingUser = userService.findOne(id);
+		if (existingUser == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		if (existingUser.getEmail().equals(updateUserDto.getEmail()) || existingUser.getUsername().equals(updateUserDto.getUsername())) {
 			return new ResponseEntity<>("This email or username has already been registered", HttpStatus.BAD_REQUEST);
 		}
 		UserInfoDto updatedUser = userService.update(id, updateUserDto);
@@ -84,8 +88,26 @@ public class UserController {
 		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 	}
 	
+	@PatchMapping("/{id}/password")
+	ResponseEntity<?> updatePassword(@PathVariable(name = "id") Integer id, @RequestBody @Valid UpdatePasswordDto updatePasswordDto, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
+		}
+		UserInfoDto userFound = userService.findOne(id);
+		if (userFound == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		String updatedMessage = userService.updatePassword(id, updatePasswordDto.getPassword());
+		return new ResponseEntity<>(updatedMessage, HttpStatus.OK);
+	}
+	
 	@DeleteMapping("/{id}")
 	ResponseEntity<?> delete(@PathVariable(name = "id") Integer id) {
+		UserInfoDto existingUser = userService.findOne(id);
+		if (existingUser == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		userService.delete(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }

@@ -16,5 +16,6 @@ public interface UserService {
 	UserInfoDto updateStatus(Integer code);
 	UserInfoDto serializeUserInfoDto(User user);
 	UserInfoDto findByEmailOrUsername(String email, String username);
+	String updatePassword(Integer id, String password);
 	void delete(Integer code);
 }
