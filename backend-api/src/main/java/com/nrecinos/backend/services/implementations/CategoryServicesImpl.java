@@ -20,44 +20,55 @@ public class CategoryServicesImpl implements CategoryService {
 	
 	@Override
 	public CategoryInfoDto create(CreateCategoryDto info) {
-		
+			
 		return null;
 	}
 
 	@Override
-	@Transactional(rollbackOn = Exception.class)
+	//@Transactional(rollbackOn = Exception.class)
 	public Category save(Category category) {
 		Category newCategory = new Category(
-				category.getId(),
-				category.getName(),
-				category.getDescription());
+				category.getName(), 
+				category.getDescription()
+				);
 		
 		return null;
+		return categoryRepostory.save(newCategory)
 	}
 
 	@Override
 	public List<Category> findAll() {
-		// TODO Auto-generated method stub
+		//return categoryRepository.findAll();
 		return null;
 	}
 
 	@Override
 	public CategoryInfoDto findOne(Integer code) {
-		// TODO Auto-generated method stub
+		//return categoryRepository.findById(code).orElse(null);
 		return null;
 	}
 
 	@Override
 	public CategoryInfoDto update(Integer code, UpdateCategoryDto updateCategoryDto) {
-		// TODO Auto-generated method stub
+		
+		CategoryInfoDto categoryDto = findOne(code);
+		
+		if(categoryDto == null) {
+			return null;
+		}
+		
+		Category category = new Category(
+				updateCategoryDto.getName(),
+				updateCategoryDto.getDescription());
+		//return categoryRepository.save(category)
 		return null;
+		
 	}
 
 	@Override
-	@Transactional(rollbackOn = Execption.class)
-	public void delete(Integer code) throws Exception {
+	@Transactional(rollbackOn = ExCeption.class)
+	public void delete(Integer code) {
 		//caategoryRespository.deleteById(code);
-		return null;
 		
 	}
 
