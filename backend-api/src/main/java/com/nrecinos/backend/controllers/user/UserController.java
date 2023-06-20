@@ -1,5 +1,8 @@
 package com.nrecinos.backend.controllers.user;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -14,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nrecinos.backend.models.dtos.user.CreateUserDto;
+import com.nrecinos.backend.models.dtos.user.UpdatePasswordDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
-import com.nrecinos.backend.models.dtos.user.UserInformationDto;
-import com.nrecinos.backend.models.entities.user.UserEntity;
+import com.nrecinos.backend.models.dtos.user.UserInfoDto;
+import com.nrecinos.backend.models.entities.user.User;
+import com.nrecinos.backend.services.UserService;
 
 import jakarta.validation.Valid;
 
@@ -24,19 +29,23 @@ import jakarta.validation.Valid;
 @CrossOrigin("*")
 @RequestMapping("/users")
 public class UserController {
+
+	@Autowired
+	UserService userService;
+	
 	@GetMapping("/")
 	ResponseEntity<?> getAllUsers() {
-		// TODO: update with service method and create variable
-		return new ResponseEntity<>("All users", HttpStatus.OK);
+		List<UserInfoDto> users = userService.findAll();
+		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
 	ResponseEntity<?> getOne(@PathVariable(name = "id") Integer id){
-		UserInformationDto user = null; // TODO: Update with service method
+		UserInfoDto user = userService.findOne(id); // TODO: Update with service method
 		if (user == null) {
 			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>("Single user with id: " + id, HttpStatus.OK);
+		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 	
 	@PostMapping("/")
@@ -44,19 +53,61 @@ public class UserController {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		UserInfoDto existingUser = userService.findByEmailOrUsername(createUserDto.getEmail(), createUserDto.getUsername());
+		if (existingUser != null) {
+			return new ResponseEntity<>("This email or username has already been registered", HttpStatus.BAD_REQUEST);
+		}
+		
+		UserInfoDto newUser = userService.create(createUserDto);
+		return new ResponseEntity<>(newUser, HttpStatus.CREATED);
 	}
 	
 	@PatchMapping("/{id}")
-	ResponseEntity<?> update(@PathVariable(name = "id") Integer id, @RequestBody @Valid UpdateUserDto updateteUserDto, BindingResult validations) {
+	ResponseEntity<?> update(@PathVariable(name = "id") Integer id, @RequestBody @Valid UpdateUserDto updateUserDto, BindingResult validations) {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
+		UserInfoDto existingUser = userService.findOne(id);
+		if (existingUser == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		if (existingUser.getEmail().equals(updateUserDto.getEmail()) || existingUser.getUsername().equals(updateUserDto.getUsername())) {
+			return new ResponseEntity<>("This email or username has already been registered", HttpStatus.BAD_REQUEST);
+		}
+		UserInfoDto updatedUser = userService.update(id, updateUserDto);
+		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+	}
+	
+	@PatchMapping("/{id}/verified")
+	ResponseEntity<?> updateStatus(@PathVariable(name = "id") Integer id) {
+		UserInfoDto userFound = userService.findOne(id);
+		if (userFound == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		UserInfoDto updatedUser = userService.updateStatus(id);
+		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+	}
+	
+	@PatchMapping("/{id}/password")
+	ResponseEntity<?> updatePassword(@PathVariable(name = "id") Integer id, @RequestBody @Valid UpdatePasswordDto updatePasswordDto, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
+		}
+		UserInfoDto userFound = userService.findOne(id);
+		if (userFound == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		String updatedMessage = userService.updatePassword(id, updatePasswordDto.getPassword());
+		return new ResponseEntity<>(updatedMessage, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
 	ResponseEntity<?> delete(@PathVariable(name = "id") Integer id) {
-		return new ResponseEntity<>(HttpStatus.OK);
+		UserInfoDto existingUser = userService.findOne(id);
+		if (existingUser == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		userService.delete(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }
