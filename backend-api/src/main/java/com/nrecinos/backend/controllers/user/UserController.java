@@ -62,11 +62,16 @@ public class UserController {
 	}
 	
 	@PatchMapping("/{id}")
-	ResponseEntity<?> update(@PathVariable(name = "id") Integer id, @RequestBody @Valid UpdateUserDto updateteUserDto, BindingResult validations) {
+	ResponseEntity<?> update(@PathVariable(name = "id") Integer id, @RequestBody @Valid UpdateUserDto updateUserDto, BindingResult validations) {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
+		UserInfoDto existingUser = userService.findByEmailOrUsername(updateUserDto.getEmail(), updateUserDto.getUsername());
+		if (existingUser != null) {
+			return new ResponseEntity<>("This email or username has already been registered", HttpStatus.BAD_REQUEST);
+		}
+		UserInfoDto updatedUser = userService.update(id, updateUserDto);
+		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 	}
 	
 	@PatchMapping("/{id}/verified")
@@ -81,6 +86,6 @@ public class UserController {
 	
 	@DeleteMapping("/{id}")
 	ResponseEntity<?> delete(@PathVariable(name = "id") Integer id) {
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }

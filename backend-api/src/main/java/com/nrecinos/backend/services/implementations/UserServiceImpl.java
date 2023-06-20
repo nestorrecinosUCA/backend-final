@@ -53,9 +53,25 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserInfoDto update(Integer code, UpdateUserDto updateCategoryDto) {
-		// TODO Auto-generated method stub
-		return null;
+	public UserInfoDto update(Integer id, UpdateUserDto updateUserDto) {
+		User userToUpdate = userRepository.findOneById(id);
+		if (updateUserDto.getName() != null) {
+			userToUpdate.setName(updateUserDto.getName());
+		}
+		if (updateUserDto.getLastname() != null) {
+			userToUpdate.setLastname(updateUserDto.getLastname());
+		}
+		if (updateUserDto.getPhoneNumber() != null) {
+			userToUpdate.setPhoneNumber(updateUserDto.getPhoneNumber());
+		}
+		if (updateUserDto.getEmail() != null) {
+			userToUpdate.setEmail(updateUserDto.getEmail());
+		}
+		if (updateUserDto.getUsername() != null) {
+			userToUpdate.setUsername(updateUserDto.getUsername());
+		}
+		User updatedUser = userRepository.save(userToUpdate);
+		return this.serializeUserInfoDto(updatedUser);
 	}
 
 	@Override
