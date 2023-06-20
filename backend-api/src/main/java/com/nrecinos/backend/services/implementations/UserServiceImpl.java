@@ -59,9 +59,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserInfoDto updateStatus(Integer code) {
-		// TODO Auto-generated method stub
-		return null;
+	public UserInfoDto updateStatus(Integer id) {
+		User user = userRepository.findOneById(id);
+		if (user.getIsVerified() == true) {
+			user.setIsVerified(false);
+			User updatedUserToNonVerified = this.save(user);
+			return this.serializeUserInfoDto(updatedUserToNonVerified);
+		}
+		user.setIsVerified(true);
+		User updateUserToVerified = this.save(user);
+		return this.serializeUserInfoDto(updateUserToVerified);
 	}
 
 	@Override

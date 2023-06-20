@@ -69,6 +69,16 @@ public class UserController {
 		return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
 	}
 	
+	@PatchMapping("/{id}/verified")
+	ResponseEntity<?> updateStatus(@PathVariable(name = "id") Integer id) {
+		UserInfoDto userFound = userService.findOne(id);
+		if (userFound == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		UserInfoDto updatedUser = userService.updateStatus(id);
+		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+	}
+	
 	@DeleteMapping("/{id}")
 	ResponseEntity<?> delete(@PathVariable(name = "id") Integer id) {
 		return new ResponseEntity<>(HttpStatus.OK);
