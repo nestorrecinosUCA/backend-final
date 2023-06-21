@@ -10,42 +10,53 @@ import com.nrecinos.backend.models.dtos.category.CategoryInfoDto;
 import com.nrecinos.backend.models.dtos.category.CreateCategoryDto;
 import com.nrecinos.backend.models.dtos.category.UpdateCategoryDto;
 import com.nrecinos.backend.models.entities.category.Category;
+import com.nrecinos.backend.repositories.CategoryRepository;
 import com.nrecinos.backend.services.CategoryService;
 
 @Service
 public class CategoryServicesImpl implements CategoryService {
 	
 	@Autowired 
-	//private CategoryRepository categoryRepository;
+	private CategoryRepository categoryRepository;
 	
 	@Override
 	public CategoryInfoDto create(CreateCategoryDto info) {
-			
-		return null;
+		Category newCategory = new Category(
+				info.getName(), 
+				info.getDescription()
+				);
+		Category saveCategory = this.save(newCategory);
+		CategoryInfoDto categoryInfo = this.serializeCategoryInfoDto(saveCategory);
+		
+		return categoryInfo;
 	}
+	
+	@Override
+	public CategoryInfoDto serializeCategoryInfoDto(Category category) {
+		return new CategoryInfoDto(category.getName(), category.getDescription());
+	}
+	
 
 	@Override
 	//@Transactional(rollbackOn = Exception.class)
 	public Category save(Category category) {
-		Category newCategory = new Category(
-				category.getName(), 
-				category.getDescription()
-				);
-		
-		return null;
-		return categoryRepostory.save(newCategory)
+		return categoryRepository.save(category);
 	}
 
 	@Override
 	public List<Category> findAll() {
-		//return categoryRepository.findAll();
-		return null;
+		return categoryRepository.findAll();
+		
 	}
 
 	@Override
 	public CategoryInfoDto findOne(Integer code) {
-		//return categoryRepository.findById(code).orElse(null);
+		Category category = categoryRepository.findOneById(code);
+		if(category == null) {
 		return null;
+		}
+		CategoryInfoDto categoryInfo = this.serializeCategoryInfoDto(category);
+		return categoryInfo;
 	}
 
 	@Override
@@ -56,7 +67,6 @@ public class CategoryServicesImpl implements CategoryService {
 		if(categoryDto == null) {
 			return null;
 		}
-		
 		Category category = new Category(
 				updateCategoryDto.getName(),
 				updateCategoryDto.getDescription());
@@ -66,10 +76,9 @@ public class CategoryServicesImpl implements CategoryService {
 	}
 
 	@Override
-	@Transactional(rollbackOn = ExCeption.class)
+	//@Transactional(rollbackOn = ExCeption.class)
 	public void delete(Integer code) {
-		//caategoryRespository.deleteById(code);
-		
+		 categoryRepository.deleteById(code);
 	}
 
 }
