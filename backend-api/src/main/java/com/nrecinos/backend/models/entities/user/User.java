@@ -15,11 +15,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "user", schema = "public")
 public class User {
 	@Id
+	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
@@ -56,8 +61,7 @@ public class User {
 	@JsonIgnore
 	private List<Voucher> vouchers;
 
-	public User(String name, String lastname, String phoneNumber, String email, String password, String username,
-			Boolean isVerified) {
+	public User(String name, String lastname, String phoneNumber, String email, String password, String username, Boolean isVerified) {
 		super();
 		this.name = name;
 		this.lastname = lastname;

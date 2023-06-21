@@ -13,7 +13,7 @@ public class UserInfoDto {
 	String username;
 	Boolean isVerified;
 	// TODO Add valid relationship when these modules are added
-	Integer rolId;
-	Integer eventId;
-	Integer ticketId;
+	//Integer rolId;
+	//Integer eventId;
+	//Integer ticketId;
 }

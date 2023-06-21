@@ -10,9 +10,12 @@ import com.nrecinos.backend.models.entities.user.User;
 public interface UserService {
 	UserInfoDto create(CreateUserDto createCategoryDto);
 	User save(User category);
-	List<User> findAll();
+	List<UserInfoDto> findAll();
 	UserInfoDto findOne(Integer code);
 	UserInfoDto update(Integer code, UpdateUserDto updateCategoryDto);
 	UserInfoDto updateStatus(Integer code);
+	UserInfoDto serializeUserInfoDto(User user);
+	UserInfoDto findByEmailOrUsername(String email, String username);
+	String updatePassword(Integer id, String password);
 	void delete(Integer code);
 }
