@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import com.nrecinos.backend.models.dtos.event.CreateEventDto;
 import com.nrecinos.backend.models.dtos.event.EventInfoDto;
 import com.nrecinos.backend.models.dtos.event.UpdateEventDto;
+import com.nrecinos.backend.models.entities.category.Category;
 import com.nrecinos.backend.models.entities.event.Event;
+import com.nrecinos.backend.models.entities.user.User;
 import com.nrecinos.backend.repositories.EventRepository;
 import com.nrecinos.backend.services.EventService;
 
@@ -19,23 +21,21 @@ public class EventServiceImpl implements EventService {
 	private EventRepository eventRepository;
 	
 	@Override
-	public EventInfoDto create(CreateEventDto createCategoryDto) {
-		// TODO Auto-generated method stub
-		return null;
+	public EventInfoDto create(CreateEventDto createEventDto, User user, Category category) {
+		Event event = new Event(createEventDto.getTitle(), createEventDto.getDescription(), createEventDto.getDate(), createEventDto.getHour(), createEventDto.getDuration(), 0, createEventDto.getAssistantsCapacity(), user, category, true);
+		Event savedEvent = this.save(event);
+		return this.serializeEvent(savedEvent);
 	}
 
 	@Override
-	public Event save(Event category) {
-		// TODO Auto-generated method stub
-		return null;
+	public Event save(Event event) {
+		Event savedEvent = eventRepository.save(event);
+		return savedEvent;
 	}
 
 	@Override
 	public List<EventInfoDto> findAll() {
 		List<Event> events = eventRepository.findAll();
-		/*if (events.size() == 0) {
-			return new ArrayList<>();
-		}*/
 		List<EventInfoDto> eventsSerialized = events.stream()
 				.map(event -> this.serializeEvent(event))
 				.toList();
