@@ -18,10 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nrecinos.backend.models.dtos.event.CreateEventDto;
 import com.nrecinos.backend.models.dtos.event.EventInfoDto;
+import com.nrecinos.backend.models.dtos.event.UpdateEventDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
 import com.nrecinos.backend.models.entities.category.Category;
+import com.nrecinos.backend.models.entities.event.Event;
 import com.nrecinos.backend.models.entities.user.User;
 import com.nrecinos.backend.repositories.CategoryRepository;
+import com.nrecinos.backend.repositories.EventRepository;
 import com.nrecinos.backend.repositories.UserRepository;
 import com.nrecinos.backend.services.EventService;
 
@@ -39,6 +42,9 @@ public class EventController {
 	
 	@Autowired
 	CategoryRepository categoryRepository;
+	
+	@Autowired
+	EventRepository eventRepository;
 	
 	@GetMapping("")
 	ResponseEntity<?> getAll() {
@@ -74,11 +80,22 @@ public class EventController {
 	}
 
 	@PatchMapping("/{id}")
-	ResponseEntity<?> update(@RequestBody @Valid UpdateUserDto updateUserDto, BindingResult validations) {
+	ResponseEntity<?> update(@PathVariable(name = "id")Integer id, @RequestBody @Valid UpdateEventDto updateEventDto, BindingResult validations) {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
+		Event event = eventRepository.findOneById(id);
+		if (event == null) {
+			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+		}
+		if (updateEventDto.getCategoryId() != null) {
+        	Category category = categoryRepository.findOneById(updateEventDto.getCategoryId());
+        	if (category == null) {
+        		return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
+        	}
+        }
+		EventInfoDto eventUpdated = eventService.update(id, updateEventDto);
+		return new ResponseEntity<>(eventUpdated, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")

@@ -12,6 +12,7 @@ import com.nrecinos.backend.models.dtos.event.UpdateEventDto;
 import com.nrecinos.backend.models.entities.category.Category;
 import com.nrecinos.backend.models.entities.event.Event;
 import com.nrecinos.backend.models.entities.user.User;
+import com.nrecinos.backend.repositories.CategoryRepository;
 import com.nrecinos.backend.repositories.EventRepository;
 import com.nrecinos.backend.services.EventService;
 
@@ -19,6 +20,9 @@ import com.nrecinos.backend.services.EventService;
 public class EventServiceImpl implements EventService {
 	@Autowired
 	private EventRepository eventRepository;
+	
+	@Autowired
+	private CategoryRepository categoryRepository;
 	
 	@Override
 	public EventInfoDto create(CreateEventDto createEventDto, User user, Category category) {
@@ -53,9 +57,32 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public EventInfoDto update(Integer code, UpdateEventDto updateEventDto) {
-		// TODO Auto-generated method stub
-		return null;
+	public EventInfoDto update(Integer id, UpdateEventDto updateEventDto) {
+		Event eventToUpdate = eventRepository.findOneById(id);
+		if (updateEventDto.getTitle() != null) {
+            eventToUpdate.setTitle(updateEventDto.getTitle());
+        }
+        if (updateEventDto.getDescription() != null) {
+            eventToUpdate.setDescription(updateEventDto.getDescription());
+        }
+        if (updateEventDto.getDate() != null) {
+            eventToUpdate.setDate(updateEventDto.getDate());
+        }
+        if (updateEventDto.getHour() != null) {
+            eventToUpdate.setHour(updateEventDto.getHour());
+        }
+        if (updateEventDto.getDuration() != null) {
+            eventToUpdate.setDuration(updateEventDto.getDuration());
+        }
+        if (updateEventDto.getAssistantsCapacity() != null) {
+            eventToUpdate.setAssistantsCapacity(updateEventDto.getAssistantsCapacity());
+        }
+        if (updateEventDto.getCategoryId() != null) {
+        	Category category = categoryRepository.findOneById(updateEventDto.getCategoryId());
+        	eventToUpdate.setCategory(category);
+        }
+		Event savedEvent = this.save(eventToUpdate);
+		return this.serializeEvent(savedEvent);
 	}
 
 	@Override
