@@ -15,10 +15,11 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "voucher")
+@Table(name = "category", schema = "public")
 public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Integer id;
 
 	@Column(name = "name")
@@ -26,6 +27,7 @@ public class Category {
 	
 	@Column(name = "description")
 	private String description;
+	
 	
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
 	@JsonIgnore

@@ -20,10 +20,21 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+@Setter
 @Entity
-@Table(name = "event")
+@Table(name = "event", schema = "public")
 public class Event {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,14 +65,12 @@ public class Event {
 	private Integer assistantsCapacity;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "userId")
 	@ToString.Exclude
 	private User user;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "categoryId")
-	@ToString.Exclude
-	private Category category;
+    @ToString.Exclude
+    private Category category;
 	
 	@OneToMany(mappedBy = "event")
 	@JsonIgnore

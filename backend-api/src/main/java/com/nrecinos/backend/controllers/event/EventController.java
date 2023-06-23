@@ -1,8 +1,12 @@
 package com.nrecinos.backend.controllers.event;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -15,16 +19,21 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nrecinos.backend.models.dtos.event.CreateEventDto;
 import com.nrecinos.backend.models.dtos.event.EventInfoDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
+import com.nrecinos.backend.services.EventService;
 
 import jakarta.validation.Valid;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/events")
 public class EventController {
+	@Autowired
+	EventService eventService;
+
 	@GetMapping("/")
 	ResponseEntity<?> getAll() {
-		// TODO: update with service method and create variable
-		return new ResponseEntity<>("All users", HttpStatus.OK);
+		List<EventInfoDto> events = eventService.findAll();
+		return new ResponseEntity<>(events, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")

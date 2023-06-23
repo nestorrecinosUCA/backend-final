@@ -10,8 +10,9 @@ import com.nrecinos.backend.models.entities.event.Event;
 public interface EventService {
 	EventInfoDto create(CreateEventDto createCategoryDto);
 	Event save(Event category);
-	List<Event> findAll();
+	List<EventInfoDto> findAll();
 	EventInfoDto findOne(Integer code);
 	EventInfoDto update(Integer code, UpdateEventDto updateEventDto);
 	void delete(Integer code);
+	EventInfoDto serializeEvent(Event event);
 }
