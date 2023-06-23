@@ -13,7 +13,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "category", schema = "public")
 public class Category {
@@ -36,6 +40,6 @@ public class Category {
 	public Category(String name, String description) {
 		super();
 		this.name = name;
-		this.description = description;
+			this.description = description;
 	}
 }
