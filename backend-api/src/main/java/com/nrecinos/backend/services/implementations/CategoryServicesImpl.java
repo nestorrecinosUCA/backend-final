@@ -70,8 +70,9 @@ public class CategoryServicesImpl implements CategoryService {
 		Category category = new Category(
 				updateCategoryDto.getName(),
 				updateCategoryDto.getDescription());
-		//return categoryRepository.save(category)
-		return null;
+		 categoryRepository.save(category);
+		 CategoryInfoDto categoryInfo = this.serializeCategoryInfoDto(category);
+		return categoryInfo;
 		
 	}
 

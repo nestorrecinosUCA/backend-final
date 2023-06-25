@@ -8,10 +8,11 @@ import com.nrecinos.backend.models.dtos.tier.UpdateTierDto;
 import com.nrecinos.backend.models.entities.tier.Tier;
 
 public interface TierService {
-	TierInfoDto create(CreateTierDto createCategoryDto);
-	Tier save(Tier category);
+	TierInfoDto create(CreateTierDto createTierDto);
+	Tier save(Tier tier);
 	List<Tier> findAll();
 	TierInfoDto findOne(Integer code);
-	TierInfoDto update(Integer code, UpdateTierDto updateCategoryDto);
+	TierInfoDto update(Integer code, UpdateTierDto updateTierDto);
 	void delete(Integer code);
+	TierInfoDto serializeTierInfoDto(Tier tier);
 }
