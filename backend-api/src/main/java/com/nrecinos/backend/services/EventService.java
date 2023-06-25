@@ -15,6 +15,6 @@ public interface EventService {
 	List<EventInfoDto> findAll();
 	EventInfoDto findOne(Integer code);
 	EventInfoDto update(Integer code, UpdateEventDto updateEventDto);
-	void delete(Integer code);
+	void updateStatus(Integer code);
 	EventInfoDto serializeEvent(Event event);
 }

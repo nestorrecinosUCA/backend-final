@@ -56,7 +56,7 @@ public class Event {
 	private Float duration;
 	
 	@Column(name = "is_active")
-	private boolean isActive;
+	private Boolean isActive;
 	
 	@Column(name = "assistants")
 	private Integer assistants;

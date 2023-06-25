@@ -86,9 +86,15 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public void delete(Integer code) {
-		// TODO Auto-generated method stub
-		
+	public void updateStatus(Integer id) {
+		Event event = eventRepository.findOneById(id);
+		System.out.println("Here");
+		if(event.getIsActive() == true) {
+			event.setIsActive(false);
+		} else {
+			event.setIsActive(true);
+		}
+		this.save(event);
 	}
 
 	@Override

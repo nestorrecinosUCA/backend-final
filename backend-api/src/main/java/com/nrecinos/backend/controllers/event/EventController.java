@@ -95,11 +95,16 @@ public class EventController {
         	}
         }
 		EventInfoDto eventUpdated = eventService.update(id, updateEventDto);
-		return new ResponseEntity<>(eventUpdated, HttpStatus.OK);
+		return new ResponseEntity<>(eventUpdated	, HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/{id}")
-	ResponseEntity<?> delete(@PathVariable(name = "id") Integer id) {
+	@PatchMapping("/change-status/{id}")
+	ResponseEntity<?> updateEventStatus(@PathVariable(name = "id") Integer id) {
+		EventInfoDto event = eventService.findOne(id); // TODO: update with service
+		if(event == null) {
+			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+		}
+		eventService.updateStatus(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
