@@ -23,10 +23,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "category")
+@Table(name = "category", schema = "public")
 public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Integer id;
 
 	@Column(name = "name")
@@ -35,6 +36,7 @@ public class Category {
 	@Column(name = "description")
 	private String description;
 	
+	
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Event> events;
@@ -42,6 +44,6 @@ public class Category {
 	public Category(String name, String description) {
 		super();
 		this.name = name;
-		this.description = description;
+			this.description = description;
 	}
 }

@@ -9,6 +9,8 @@ import com.nrecinos.backend.models.entities.involved.Involved;
 import com.nrecinos.backend.models.entities.sponsor.Sponsor;
 import com.nrecinos.backend.models.entities.tier.Tier;
 import com.nrecinos.backend.models.entities.user.User;
+import com.nrecinos.backend.models.entities.users_roles_role.UsersXRoles;
+import com.nrecinos.backend.models.entities.voucher.Voucher;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,13 +22,22 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
+@Data
+@NoArgsConstructor
 @Entity
-@Table(name = "event")
+@Table(name = "event", schema = "public")
 public class Event {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Integer id;
 	
 	@Column(name = "title")
@@ -54,14 +65,12 @@ public class Event {
 	private Integer assistantsCapacity;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "userId")
 	@ToString.Exclude
 	private User user;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "categoryId")
-	@ToString.Exclude
-	private Category category;
+    @ToString.Exclude
+    private Category category;
 	
 	@OneToMany(mappedBy = "event")
 	@JsonIgnore
@@ -75,8 +84,8 @@ public class Event {
 	@JsonIgnore
 	private List<Tier> tiers;
 	
-	public Event(String title, String description, Date date, String hour, Float duration, Boolean isActive,
-			Integer assistants, Integer assistantsCapacity, User user, Category category) {
+	public Event(String title, String description, Date date, String hour, Float duration,
+			Integer assistants, Integer assistantsCapacity, User user, Category category, Boolean isActive) {
 		super();
 		this.title = title;
 		this.description = description;

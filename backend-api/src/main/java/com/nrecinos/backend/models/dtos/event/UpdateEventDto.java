@@ -21,18 +21,13 @@ public class UpdateEventDto {
 	
 	// Add a regex to validate the hour
 	String hour;
-
+	
+	@Positive()
 	Float duration;
 	// The isActive field is not created because it is true by default
  
 	@Positive()
 	Integer assistantsCapacity;
-
-	@Positive()
-	Integer userId;
-
-	@Positive()
-	Integer tierId;
 	
 	@Positive()
 	Integer categoryId;
