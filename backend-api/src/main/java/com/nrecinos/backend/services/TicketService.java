@@ -8,10 +8,11 @@ import com.nrecinos.backend.models.dtos.ticket.UpdateTicketDto;
 import com.nrecinos.backend.models.entities.ticket.Ticket;
 
 public interface TicketService {
-	TicketInfoDto create(CreateTicketDto createCategoryDto);
-	Ticket save(Ticket category);
+	TicketInfoDto create(CreateTicketDto createTicketDto);
+	Ticket save(Ticket ticket);
 	List<Ticket> findAll();
 	TicketInfoDto findOne(Integer code);
-	TicketInfoDto update(Integer code, UpdateTicketDto updateCategoryDto);
+	TicketInfoDto update(Integer code, UpdateTicketDto updateTicketDto);
 	void delete(Integer code);
+	TicketInfoDto serializeTicketInfoDto(Ticket ticket);
 }

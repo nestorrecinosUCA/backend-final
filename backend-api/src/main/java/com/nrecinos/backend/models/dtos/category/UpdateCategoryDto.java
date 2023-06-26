@@ -7,4 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateCategoryDto {
 
+	 String name;
+	 String description;
 }

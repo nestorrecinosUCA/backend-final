@@ -14,4 +14,5 @@ public interface CategoryService {
 	CategoryInfoDto findOne(Integer code);
 	CategoryInfoDto update(Integer code, UpdateCategoryDto updateCategoryDto);
 	void delete(Integer code);
+	CategoryInfoDto serializeCategoryInfoDto(Category category);
 }
