@@ -20,25 +20,18 @@ public class CategoryServicesImpl implements CategoryService {
 	private CategoryRepository categoryRepository;
 	
 	@Override
-	public CategoryInfoDto create(CreateCategoryDto info) {
+	public Category create(CreateCategoryDto info) {
 		Category newCategory = new Category(
 				info.getName(), 
 				info.getDescription()
 				);
 		Category saveCategory = this.save(newCategory);
-		CategoryInfoDto categoryInfo = this.serializeCategoryInfoDto(saveCategory);
 		
-		return categoryInfo;
-	}
-	
-	@Override
-	public CategoryInfoDto serializeCategoryInfoDto(Category category) {
-		return new CategoryInfoDto(category.getName(), category.getDescription());
+		return saveCategory;
 	}
 	
 
 	@Override
-	//@Transactional(rollbackOn = Exception.class)
 	public Category save(Category category) {
 		return categoryRepository.save(category);
 	}
@@ -46,38 +39,35 @@ public class CategoryServicesImpl implements CategoryService {
 	@Override
 	public List<Category> findAll() {
 		return categoryRepository.findAll();
-		
 	}
 
 	@Override
-	public CategoryInfoDto findOne(Integer code) {
+	public Category findOne(Integer code) {
 		Category category = categoryRepository.findOneById(code);
 		if(category == null) {
-		return null;
-		}
-		CategoryInfoDto categoryInfo = this.serializeCategoryInfoDto(category);
-		return categoryInfo;
-	}
-
-	@Override
-	public CategoryInfoDto update(Integer code, UpdateCategoryDto updateCategoryDto) {
-		
-		CategoryInfoDto categoryDto = findOne(code);
-		
-		if(categoryDto == null) {
 			return null;
 		}
-		Category category = new Category(
-				updateCategoryDto.getName(),
-				updateCategoryDto.getDescription());
-		 categoryRepository.save(category);
-		 CategoryInfoDto categoryInfo = this.serializeCategoryInfoDto(category);
-		return categoryInfo;
+		return category;
+	}
+
+	@Override
+	public Category update(Integer code, UpdateCategoryDto updateCategoryDto) {
+		Category categoryToUpdate = findOne(code);
+		if(categoryToUpdate == null) {
+			return null;
+		}
+		if (updateCategoryDto.getName() != null) {
+			categoryToUpdate.setName(updateCategoryDto.getName());
+		}
+		if (updateCategoryDto.getDescription() != null) {
+			categoryToUpdate.setDescription(updateCategoryDto.getDescription());
+		}
+		Category updatedCategory = this.save(categoryToUpdate);
+		return updatedCategory;
 		
 	}
 
 	@Override
-	//@Transactional(rollbackOn = ExCeption.class)
 	public void delete(Integer code) {
 		 categoryRepository.deleteById(code);
 	}

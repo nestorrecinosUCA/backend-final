@@ -1,13 +1,9 @@
 package com.nrecinos.backend.models.entities.category;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nrecinos.backend.models.entities.event.Event;
-import com.nrecinos.preparcial.models.entities.Playlist;
-import com.nrecinos.preparcial.models.entities.SongXPlaylist;
-import com.nrecinos.preparcial.models.entities.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

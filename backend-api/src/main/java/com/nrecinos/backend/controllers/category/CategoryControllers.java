@@ -1,5 +1,8 @@
 package com.nrecinos.backend.controllers.category;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,37 +18,39 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nrecinos.backend.models.dtos.category.CategoryInfoDto;
 import com.nrecinos.backend.models.dtos.category.CreateCategoryDto;
 import com.nrecinos.backend.models.dtos.category.UpdateCategoryDto;
+import com.nrecinos.backend.models.entities.category.Category;
+import com.nrecinos.backend.services.CategoryService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/categories")
 public class CategoryControllers {
+	@Autowired
+	CategoryService categoryService;
 
-	@PostMapping("/")
-	ResponseEntity<?> create(@RequestBody @Valid CreateCategoryDto craeteCategoryDto, BindingResult validations){
+	@PostMapping("")
+	ResponseEntity<?> create(@RequestBody @Valid CreateCategoryDto createCategoryDto, BindingResult validations){
 		if(validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		Category newCategory = categoryService.create(createCategoryDto);
+		return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/")
+	@GetMapping("")
 	ResponseEntity<?> getAll(){
-		//List<Category> category = categoryService.getAll();
-		//if(category == null) {
-		//	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		//}
-		return new ResponseEntity<>("All category", HttpStatus.OK);
+		List<Category> categories = categoryService.findAll();
+		return new ResponseEntity<>(categories, HttpStatus.OK);
 	} 
 	
 	@GetMapping("/{code}")
 	ResponseEntity<?> getCategoryById(@PathVariable(name = "code") Integer code){
-		CategoryInfoDto category = null; //TODO: Update with service method
+		Category category = categoryService.findOne(code); //TODO: Update with service method
 		if(category == null) {
 			return new ResponseEntity<>("Category not Found", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		return new ResponseEntity<>(category, HttpStatus.CREATED);
 	}
 	
 	@PatchMapping("/{code}")
@@ -53,12 +58,22 @@ public class CategoryControllers {
 		if(validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>("Update Successfully", HttpStatus.OK);
+		Category category = categoryService.findOne(code);
+		if(category == null) {
+			return new ResponseEntity<>("Category not Found", HttpStatus.NOT_FOUND);
+		}
+		Category updatedCategory = categoryService.update(code, updateCategoryDto);
+		return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
 		
 	}
 	
 	@DeleteMapping("/{code}")
 	ResponseEntity<?> delete(@PathVariable(name = "code") Integer code){
+		Category category = categoryService.findOne(code);
+		if(category == null) {
+			return new ResponseEntity<>("Category not Found", HttpStatus.NOT_FOUND);
+		}
+		categoryService.delete(code);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
