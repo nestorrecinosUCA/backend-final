@@ -10,36 +10,44 @@ import com.nrecinos.backend.models.dtos.sponsor.SponsorInfoDto;
 import com.nrecinos.backend.models.dtos.sponsor.UpdateSponsorDto;
 import com.nrecinos.backend.models.entities.event.Event;
 import com.nrecinos.backend.models.entities.sponsor.Sponsor;
+import com.nrecinos.backend.repositories.EventRepository;
 import com.nrecinos.backend.repositories.SponsorRepository;
 import com.nrecinos.backend.services.SponsorService;
 
 @Service
 public class SponsorServicesImpl implements SponsorService {
+	@Autowired
+	EventRepository eventRepository;
 
 	@Autowired
 	private SponsorRepository sponsorRepository;
 	
 	@Override
 	public SponsorInfoDto create(CreateSponsorDto info) {
+		Event event = eventRepository.findOneById(info.getEventId());
 		Sponsor newSponsor = new Sponsor(
 				info.getName(),
-				info.getEvent());
+				event
+		);
 		
 		Sponsor saveSponsor = this.save(newSponsor);
-		SponsorInfoDto sponsorInfo = this.serializeSponsorInfoDto(saveSponsor);
-		
-		return sponsorInfo;
+		SponsorInfoDto serializedSponsor = this.serializeSponsorInfoDto(saveSponsor);
+		return serializedSponsor;
 	}
 
 	@Override
 	public Sponsor save(Sponsor sponsor) {
-		// TODO Auto-generated method stub
 		return sponsorRepository.save(sponsor);
 	}
 
 	@Override
-	public List<Sponsor> findAll() {
-		return sponsorRepository.findAll();
+	public List<SponsorInfoDto> findAllByEventId(Integer id) {
+		List<Sponsor> sponsors = sponsorRepository.findAllByEventId(id);
+		List<SponsorInfoDto> serializedSponsors = sponsors
+				.stream()
+				.map(sponsor -> this.serializeSponsorInfoDto(sponsor))
+				.toList();
+		return serializedSponsors;
 	}
 
 	@Override
@@ -54,14 +62,14 @@ public class SponsorServicesImpl implements SponsorService {
 
 	@Override
 	public SponsorInfoDto update(Integer code, UpdateSponsorDto updateSponsorDto) {
-		SponsorInfoDto sponsorDto = this.findOne(code);
-		if(sponsorDto == null) {
-			return null;
+		Sponsor sponsor = sponsorRepository.findOneById(code);
+		if(updateSponsorDto.getName() != null) {
+			sponsor.setName(updateSponsorDto.getName());;
 		}
-		Sponsor sponsor = new Sponsor (
-				updateSponsorDto.getName(),
-				updateSponsorDto.getEvent());
-		
+		if(updateSponsorDto.getEventId() != null) {
+			Event event = eventRepository.findOneById(updateSponsorDto.getEventId());
+			sponsor.setEvent(event);
+		}
 		sponsorRepository.save(sponsor);
 		SponsorInfoDto sponsorInfo= this.serializeSponsorInfoDto(sponsor);
 		return sponsorInfo;
@@ -70,12 +78,11 @@ public class SponsorServicesImpl implements SponsorService {
 	@Override
 	public void delete(Integer code) {
 		sponsorRepository.deleteById(code);
-		
 	}
 	
 	@Override
 	public SponsorInfoDto serializeSponsorInfoDto(Sponsor sponsor) {
-		return new SponsorInfoDto(sponsor.getName(), sponsor.getEvent());
+		return new SponsorInfoDto(sponsor.getId(), sponsor.getName(), sponsor.getEvent().getTitle(), sponsor.getEvent().getId());
 	}
 
 }

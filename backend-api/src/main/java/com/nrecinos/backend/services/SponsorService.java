@@ -11,7 +11,7 @@ import com.nrecinos.backend.models.entities.sponsor.Sponsor;
 public interface SponsorService {
 	SponsorInfoDto create(CreateSponsorDto createSponsorDto);
 	Sponsor save(Sponsor sponsor);
-	List<Sponsor> findAll();
+	List<SponsorInfoDto> findAllByEventId(Integer id);
 	SponsorInfoDto findOne(Integer code);
 	SponsorInfoDto update(Integer code, UpdateSponsorDto updateSponsorDto);
 	void delete(Integer code);
