@@ -9,8 +9,10 @@ import com.nrecinos.backend.models.dtos.sponsor.SponsorInfoDto;
 import com.nrecinos.backend.models.dtos.tier.CreateTierDto;
 import com.nrecinos.backend.models.dtos.tier.TierInfoDto;
 import com.nrecinos.backend.models.dtos.tier.UpdateTierDto;
+import com.nrecinos.backend.models.entities.event.Event;
 import com.nrecinos.backend.models.entities.sponsor.Sponsor;
 import com.nrecinos.backend.models.entities.tier.Tier;
+import com.nrecinos.backend.repositories.EventRepository;
 import com.nrecinos.backend.repositories.TierRepository;
 import com.nrecinos.backend.services.TierService;
 
@@ -19,26 +21,37 @@ public class TierServiceImpl implements TierService{
 
 	@Autowired
 	private TierRepository tierRepository;
+	@Autowired
+	private EventRepository eventRepository;
 	
 	@Override
 	public TierInfoDto create(CreateTierDto info) {
+		Event event = eventRepository.findOneById(info.getEventId());
 		Tier newTier = new Tier(
 				info.getName(), 
 				info.getDescription(), 
 				info.getCapacity(), 
 				info.getPrice(),
-				info.getSold(), 
-				info.getIsSoldOut(), 
-				info.getEvent());
+				0, 
+				false, 
+				event);
 		Tier saveTier = this.save(newTier);
-		
-		return null;
+		return this.serializeTierInfoDto(saveTier);
 	}
 	
 	@Override
 	public TierInfoDto serializeTierInfoDto(Tier tier) {
-		return new TierInfoDto(tier.getName(), tier.getDescription(), tier.getCapacity(),
-				tier.getPrice(), tier.getSold(), tier.getIsSoldOut(), tier.getEvent());
+		return new TierInfoDto(
+				tier.getId(),
+				tier.getName(),
+				tier.getDescription(),
+				tier.getCapacity(),
+				tier.getPrice(),
+				tier.getSold(),
+				tier.getIsSoldOut(),
+				tier.getEvent().getTitle(),
+				tier.getEvent().getId()
+				);
 	}
 
 	@Override
@@ -47,8 +60,13 @@ public class TierServiceImpl implements TierService{
 	}
 
 	@Override
-	public List<Tier> findAll() {
-		return tierRepository.findAll();
+	public List<TierInfoDto> findAll(Integer id) {
+		List<Tier> tiers = tierRepository.findAllByEventId(id);
+		List<TierInfoDto> serializedTiers = tiers
+				.stream()
+				.map(tier -> this.serializeTierInfoDto(tier))
+				.toList();
+		return serializedTiers;
 	}
 
 	@Override
@@ -63,20 +81,33 @@ public class TierServiceImpl implements TierService{
 	}
 
 	@Override
-	public TierInfoDto update(Integer code, UpdateTierDto info) {
-		TierInfoDto tierDto = this.findOne(code);
-		if(tierDto == null) {
+	public TierInfoDto update(Integer code, UpdateTierDto updateTierDto) {
+		Tier tier = tierRepository.findOneById(code);
+		if(tier == null) {
 			return null;
 		}
-		Tier tier = new Tier(
-				info.getName(), 
-				info.getDescription(), 
-				info.getCapacity(), 
-				info.getPrice(),
-				info.getSold(), 
-				info.getIsSoldOut(), 
-				info.getEvent());
-		
+		if (updateTierDto.getName() != null) {
+            tier.setName(updateTierDto.getName());
+        }
+        if (updateTierDto.getDescription() != null) {
+            tier.setDescription(updateTierDto.getDescription());
+        }
+        if (updateTierDto.getCapacity() != null) {
+            tier.setCapacity(updateTierDto.getCapacity());
+        }
+        if (updateTierDto.getPrice() != null) {
+            tier.setPrice(updateTierDto.getPrice());
+        }
+        if (updateTierDto.getSold() != null) {
+            tier.setSold(updateTierDto.getSold());
+        }
+        if (updateTierDto.getIsSoldOut() != null) {
+            tier.setIsSoldOut(updateTierDto.getIsSoldOut());
+        }
+        if (updateTierDto.getEventId() != null) {
+        	Event event = eventRepository.findOneById(updateTierDto.getEventId());
+            tier.setEvent(event);
+        }
 		tierRepository.save(tier);
 		TierInfoDto tierInfo= this.serializeTierInfoDto(tier);
 		return tierInfo;
@@ -85,7 +116,20 @@ public class TierServiceImpl implements TierService{
 	@Override
 	public void delete(Integer code) {
 		tierRepository.deleteById(code);
-		
 	}
 
-}
+	@Override
+	public String incrementSoldTiers(Integer id, Integer quantity) {
+		Tier tier = tierRepository.findOneById(id);
+		Integer numberOfTiersSold = tier.getCapacity() + quantity;
+		if (numberOfTiersSold > tier.getCapacity()) {
+			Integer difference = numberOfTiersSold - tier.getCapacity();
+			return "There was an error, " + difference + " spaces could not be bought";
+		}
+		if (numberOfTiersSold == tier.getCapacity()) {
+			tier.setIsSoldOut(true);
+		}
+		tier.setSold(numberOfTiersSold);
+		this.save(tier);
+		return "The spaces were reserved successfully";
+	}}

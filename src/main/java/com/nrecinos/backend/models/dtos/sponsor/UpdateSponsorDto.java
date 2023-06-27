@@ -1,7 +1,5 @@
 package com.nrecinos.backend.models.dtos.sponsor;
 
-import com.nrecinos.backend.models.entities.event.Event;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,5 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateSponsorDto {
 	String name;
-	Event event;
+	Integer eventId;
 }
