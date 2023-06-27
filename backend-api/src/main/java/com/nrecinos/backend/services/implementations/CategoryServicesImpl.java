@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.nrecinos.backend.models.dtos.category.CategoryInfoDto;
 import com.nrecinos.backend.models.dtos.category.CreateCategoryDto;
 import com.nrecinos.backend.models.dtos.category.UpdateCategoryDto;
 import com.nrecinos.backend.models.entities.category.Category;
