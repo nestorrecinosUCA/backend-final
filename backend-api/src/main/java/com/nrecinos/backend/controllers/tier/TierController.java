@@ -78,8 +78,13 @@ public class TierController {
 		
 	}
 	
-	@DeleteMapping("/{code}")
-	ResponseEntity<?> delete(@PathVariable(name = "code") Integer code){
+	@DeleteMapping("/{id}")
+	ResponseEntity<?> delete(@PathVariable(name = "id") Integer id){
+		TierInfoDto tier = tierService.findOne(id);
+		if (tier == null) {
+			return new ResponseEntity<>("Tier not found", HttpStatus.NOT_FOUND);
+		}
+		tierService.delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	

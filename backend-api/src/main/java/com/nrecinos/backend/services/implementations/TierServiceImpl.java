@@ -117,7 +117,6 @@ public class TierServiceImpl implements TierService{
 	@Override
 	public void delete(Integer code) {
 		tierRepository.deleteById(code);
-		
 	}
 
 }

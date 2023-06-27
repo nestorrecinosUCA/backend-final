@@ -1,7 +1,5 @@
 package com.nrecinos.backend.models.dtos.tier;
 
-import com.nrecinos.backend.models.entities.event.Event;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,5 +12,5 @@ public class UpdateTierDto {
 	Float price;
 	Integer sold;
 	Boolean isSoldOut;
-	Event event;
+	Integer eventId;
 }
