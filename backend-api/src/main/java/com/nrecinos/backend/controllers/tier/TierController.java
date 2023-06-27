@@ -73,7 +73,8 @@ public class TierController {
 		if (tier == null) {
 			return new ResponseEntity<>("Tier not found", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>("Update Successfully", HttpStatus.OK);
+		TierInfoDto updatedTier = tierService.update(id, updateTierDto);
+		return new ResponseEntity<>(updatedTier, HttpStatus.OK);
 		
 	}
 	

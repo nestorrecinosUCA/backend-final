@@ -81,20 +81,33 @@ public class TierServiceImpl implements TierService{
 	}
 
 	@Override
-	public TierInfoDto update(Integer code, UpdateTierDto info) {
-		TierInfoDto tierDto = this.findOne(code);
-		if(tierDto == null) {
+	public TierInfoDto update(Integer code, UpdateTierDto updateTierDto) {
+		Tier tier = tierRepository.findOneById(code);
+		if(tier == null) {
 			return null;
 		}
-		Tier tier = new Tier(
-				info.getName(), 
-				info.getDescription(), 
-				info.getCapacity(), 
-				info.getPrice(),
-				info.getSold(), 
-				info.getIsSoldOut(), 
-				info.getEvent()
-				);
+		if (updateTierDto.getName() != null) {
+            tier.setName(updateTierDto.getName());
+        }
+        if (updateTierDto.getDescription() != null) {
+            tier.setDescription(updateTierDto.getDescription());
+        }
+        if (updateTierDto.getCapacity() != null) {
+            tier.setCapacity(updateTierDto.getCapacity());
+        }
+        if (updateTierDto.getPrice() != null) {
+            tier.setPrice(updateTierDto.getPrice());
+        }
+        if (updateTierDto.getSold() != null) {
+            tier.setSold(updateTierDto.getSold());
+        }
+        if (updateTierDto.getIsSoldOut() != null) {
+            tier.setIsSoldOut(updateTierDto.getIsSoldOut());
+        }
+        if (updateTierDto.getEventId() != null) {
+        	Event event = eventRepository.findOneById(updateTierDto.getEventId());
+            tier.setEvent(event);
+        }
 		
 		tierRepository.save(tier);
 		TierInfoDto tierInfo= this.serializeTierInfoDto(tier);
