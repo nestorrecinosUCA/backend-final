@@ -1,19 +1,18 @@
 package com.nrecinos.backend.models.dtos.tier;
 
-import com.nrecinos.backend.models.entities.event.Event;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 public class TierInfoDto {
+	Integer id;
 	String name;
 	String description;
 	Integer capacity;
 	Float price;
 	Integer sold;
 	Boolean isSoldOut;
-	Event event;
+	String eventName;
+	Integer eventId;
 }
