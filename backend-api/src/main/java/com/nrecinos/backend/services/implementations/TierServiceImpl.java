@@ -9,8 +9,10 @@ import com.nrecinos.backend.models.dtos.sponsor.SponsorInfoDto;
 import com.nrecinos.backend.models.dtos.tier.CreateTierDto;
 import com.nrecinos.backend.models.dtos.tier.TierInfoDto;
 import com.nrecinos.backend.models.dtos.tier.UpdateTierDto;
+import com.nrecinos.backend.models.entities.event.Event;
 import com.nrecinos.backend.models.entities.sponsor.Sponsor;
 import com.nrecinos.backend.models.entities.tier.Tier;
+import com.nrecinos.backend.repositories.EventRepository;
 import com.nrecinos.backend.repositories.TierRepository;
 import com.nrecinos.backend.services.TierService;
 
@@ -19,26 +21,37 @@ public class TierServiceImpl implements TierService{
 
 	@Autowired
 	private TierRepository tierRepository;
+	@Autowired
+	private EventRepository eventRepository;
 	
 	@Override
 	public TierInfoDto create(CreateTierDto info) {
+		Event event = eventRepository.findOneById(info.getEventId());
 		Tier newTier = new Tier(
 				info.getName(), 
 				info.getDescription(), 
 				info.getCapacity(), 
 				info.getPrice(),
-				info.getSold(), 
-				info.getIsSoldOut(), 
-				info.getEvent());
+				0, 
+				false, 
+				event);
 		Tier saveTier = this.save(newTier);
-		
-		return null;
+		return this.serializeTierInfoDto(saveTier);
 	}
 	
 	@Override
 	public TierInfoDto serializeTierInfoDto(Tier tier) {
-		return new TierInfoDto(tier.getName(), tier.getDescription(), tier.getCapacity(),
-				tier.getPrice(), tier.getSold(), tier.getIsSoldOut(), tier.getEvent());
+		return new TierInfoDto(
+				tier.getId(),
+				tier.getName(),
+				tier.getDescription(),
+				tier.getCapacity(),
+				tier.getPrice(),
+				tier.getSold(),
+				tier.getIsSoldOut(),
+				tier.getEvent().getTitle(),
+				tier.getEvent().getId()
+				);
 	}
 
 	@Override
@@ -80,7 +93,8 @@ public class TierServiceImpl implements TierService{
 				info.getPrice(),
 				info.getSold(), 
 				info.getIsSoldOut(), 
-				info.getEvent());
+				info.getEvent()
+				);
 		
 		tierRepository.save(tier);
 		TierInfoDto tierInfo= this.serializeTierInfoDto(tier);

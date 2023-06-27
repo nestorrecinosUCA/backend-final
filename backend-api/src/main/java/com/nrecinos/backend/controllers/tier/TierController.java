@@ -32,12 +32,17 @@ public class TierController {
 	@Autowired
 	EventService eventService;
 	
-	@PostMapping("/")
-	ResponseEntity<?> create(@RequestBody @Valid CreateTierDto craeteTierDto, BindingResult validations){
+	@PostMapping("")
+	ResponseEntity<?> create(@RequestBody @Valid CreateTierDto createTierDto, BindingResult validations){
 		if(validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		EventInfoDto event = eventService.findOne(createTierDto.getEventId());
+		if (event == null) {
+			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+		}
+		TierInfoDto savedTier = tierService.create(createTierDto);
+		return new ResponseEntity<>(savedTier, HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/event/{id}")
@@ -46,7 +51,7 @@ public class TierController {
 		if (event == null) {
 			return new ResponseEntity<>("Event not Found", HttpStatus.NOT_FOUND);
 		}
-		List<TierInfoDto> tiers = tierService.findAll();
+		List<TierInfoDto> tiers = tierService.findAll(id);
 		return new ResponseEntity<>(tiers, HttpStatus.OK);
 	} 
 	
