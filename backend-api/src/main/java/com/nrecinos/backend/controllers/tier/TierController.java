@@ -55,19 +55,23 @@ public class TierController {
 		return new ResponseEntity<>(tiers, HttpStatus.OK);
 	} 
 	
-	@GetMapping("/{code}")
-	ResponseEntity<?> getTierById(@PathVariable(name = "code") Integer code){
-		TierInfoDto tier = null; //TODO: Update with service method
+	@GetMapping("/{id}")
+	ResponseEntity<?> getTierById(@PathVariable(name = "id") Integer id){
+		TierInfoDto tier = tierService.findOne(id); //TODO: Update with service method
 		if(tier == null) {
 			return new ResponseEntity<>("Tier not Found", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		return new ResponseEntity<>(tier, HttpStatus.OK);
 	}
 	
-	@PatchMapping("/{code}")
-	ResponseEntity<?> updateTier(@PathVariable(name = "code") Integer code, @RequestBody @Valid UpdateTierDto updateTierDto, BindingResult validations){
+	@PatchMapping("/{id}")
+	ResponseEntity<?> updateTier(@PathVariable(name = "id") Integer id, @RequestBody @Valid UpdateTierDto updateTierDto, BindingResult validations){
 		if(validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
+		}
+		TierInfoDto tier = tierService.findOne(id);
+		if (tier == null) {
+			return new ResponseEntity<>("Tier not found", HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>("Update Successfully", HttpStatus.OK);
 		
