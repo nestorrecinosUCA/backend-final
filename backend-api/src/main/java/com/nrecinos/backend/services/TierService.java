@@ -10,7 +10,7 @@ import com.nrecinos.backend.models.entities.tier.Tier;
 public interface TierService {
 	TierInfoDto create(CreateTierDto createTierDto);
 	Tier save(Tier tier);
-	List<Tier> findAll();
+	List<TierInfoDto> findAll(Integer id);
 	TierInfoDto findOne(Integer code);
 	TierInfoDto update(Integer code, UpdateTierDto updateTierDto);
 	void delete(Integer code);

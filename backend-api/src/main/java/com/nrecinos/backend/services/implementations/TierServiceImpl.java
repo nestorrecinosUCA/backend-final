@@ -47,8 +47,13 @@ public class TierServiceImpl implements TierService{
 	}
 
 	@Override
-	public List<Tier> findAll() {
-		return tierRepository.findAll();
+	public List<TierInfoDto> findAll(Integer id) {
+		List<Tier> tiers = tierRepository.findAllByEventId(id);
+		List<TierInfoDto> serializedTiers = tiers
+				.stream()
+				.map(tier -> this.serializeTierInfoDto(tier))
+				.toList();
+		return serializedTiers;
 	}
 
 	@Override

@@ -1,5 +1,8 @@
 package com.nrecinos.backend.controllers.tier;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -12,15 +15,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nrecinos.backend.models.dtos.event.EventInfoDto;
 import com.nrecinos.backend.models.dtos.tier.CreateTierDto;
 import com.nrecinos.backend.models.dtos.tier.TierInfoDto;
 import com.nrecinos.backend.models.dtos.tier.UpdateTierDto;
+import com.nrecinos.backend.services.EventService;
+import com.nrecinos.backend.services.TierService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/tiers")
 public class TierController {
+	@Autowired
+	TierService tierService;
+	@Autowired
+	EventService eventService;
 	
 	@PostMapping("/")
 	ResponseEntity<?> create(@RequestBody @Valid CreateTierDto craeteTierDto, BindingResult validations){
@@ -30,13 +40,14 @@ public class TierController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/")
-	ResponseEntity<?> getAll(){
-		//List<Tier> tier = tierService.getAll();
-		//if(tier == null) {
-		//	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		//}
-		return new ResponseEntity<>("All tiers", HttpStatus.OK);
+	@GetMapping("/event/{id}")
+	ResponseEntity<?> getAll(@PathVariable(name = "id") Integer id){
+		EventInfoDto event = eventService.findOne(id);
+		if (event == null) {
+			return new ResponseEntity<>("Event not Found", HttpStatus.NOT_FOUND);
+		}
+		List<TierInfoDto> tiers = tierService.findAll();
+		return new ResponseEntity<>(tiers, HttpStatus.OK);
 	} 
 	
 	@GetMapping("/{code}")
