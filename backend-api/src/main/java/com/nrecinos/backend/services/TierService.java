@@ -15,4 +15,5 @@ public interface TierService {
 	TierInfoDto update(Integer code, UpdateTierDto updateTierDto);
 	void delete(Integer code);
 	TierInfoDto serializeTierInfoDto(Tier tier);
+	String incrementSoldTiers(Integer id, Integer quantity);
 }

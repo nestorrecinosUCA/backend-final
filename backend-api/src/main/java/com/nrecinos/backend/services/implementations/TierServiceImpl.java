@@ -119,4 +119,18 @@ public class TierServiceImpl implements TierService{
 		tierRepository.deleteById(code);
 	}
 
-}
+	@Override
+	public String incrementSoldTiers(Integer id, Integer quantity) {
+		Tier tier = tierRepository.findOneById(id);
+		Integer numberOfTiersSold = tier.getCapacity() + quantity;
+		if (numberOfTiersSold > tier.getCapacity()) {
+			Integer difference = numberOfTiersSold - tier.getCapacity();
+			return "There was an error, " + difference + " spaces could not be bought";
+		}
+		if (numberOfTiersSold == tier.getCapacity()) {
+			tier.setIsSoldOut(true);
+		}
+		tier.setSold(numberOfTiersSold);
+		this.save(tier);
+		return "The spaces were reserved successfully";
+	}}
