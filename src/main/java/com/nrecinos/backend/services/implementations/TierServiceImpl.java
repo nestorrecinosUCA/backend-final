@@ -108,7 +108,6 @@ public class TierServiceImpl implements TierService{
         	Event event = eventRepository.findOneById(updateTierDto.getEventId());
             tier.setEvent(event);
         }
-		
 		tierRepository.save(tier);
 		TierInfoDto tierInfo= this.serializeTierInfoDto(tier);
 		return tierInfo;

@@ -1,7 +1,6 @@
 package com.nrecinos.backend.models.dtos.tier;
 
 import com.nrecinos.backend.models.entities.event.Event;
-
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

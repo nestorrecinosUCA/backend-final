@@ -1,7 +1,6 @@
 package com.nrecinos.backend.controllers.sponsor;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,6 +69,7 @@ public class SponsorController {
 		if(validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
+
 		SponsorInfoDto sponsor = sponsorService.findOne(code);
 		if(sponsor == null) {
 			return new ResponseEntity<>("Sponsor not Found", HttpStatus.NOT_FOUND);
