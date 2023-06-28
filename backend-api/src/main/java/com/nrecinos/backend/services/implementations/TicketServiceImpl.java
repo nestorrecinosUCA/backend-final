@@ -13,6 +13,7 @@ import com.nrecinos.backend.models.entities.sponsor.Sponsor;
 import com.nrecinos.backend.models.entities.ticket.Ticket;
 import com.nrecinos.backend.models.entities.voucher.Voucher;
 import com.nrecinos.backend.repositories.TicketRepository;
+import com.nrecinos.backend.repositories.VoucherRepository;
 import com.nrecinos.backend.services.TicketService;
 import com.nrecinos.backend.services.VoucherService;
 
@@ -23,10 +24,12 @@ public class TicketServiceImpl implements TicketService{
 	private TicketRepository ticketRepository;
 	@Autowired
 	private VoucherService voucherService;
+	@Autowired
+	VoucherRepository voucherRepository;
 	
 	@Override
 	public TicketInfoDto create(CreateTicketDto info) {
-		Voucher voucher = voucherService.findOne(info.getVoucherId());
+		Voucher voucher = voucherRepository.findOneById(info.getVoucherId());
 		Ticket newTicket = new Ticket(
 				info.getTitle(),
 				info.getDescription(),
@@ -73,7 +76,6 @@ public class TicketServiceImpl implements TicketService{
 	@Override
 	public void delete(Integer code) {
 		ticketRepository.deleteById(code);
-		
 	}
 	
 	@Override

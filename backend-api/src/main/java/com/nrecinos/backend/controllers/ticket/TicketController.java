@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nrecinos.backend.models.dtos.ticket.CreateTicketDto;
 import com.nrecinos.backend.models.dtos.ticket.TicketInfoDto;
 import com.nrecinos.backend.models.dtos.ticket.UpdateTicketDto;
+import com.nrecinos.backend.models.dtos.voucher.VoucherInfoDto;
 import com.nrecinos.backend.models.entities.ticket.Ticket;
 import com.nrecinos.backend.models.entities.voucher.Voucher;
 import com.nrecinos.backend.services.TicketService;
@@ -38,7 +39,7 @@ public class TicketController {
 		if(validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		Voucher voucher = voucherService.findOne(createTicketDto.getVoucherId());
+		VoucherInfoDto voucher = voucherService.findOne(createTicketDto.getVoucherId());
 		if (voucher == null) {
 			return new ResponseEntity<>("Voucher not found", HttpStatus.CREATED);
 		}

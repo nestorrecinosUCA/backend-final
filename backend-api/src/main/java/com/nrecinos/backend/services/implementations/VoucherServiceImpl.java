@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nrecinos.backend.models.dtos.voucher.ChangeOwnerDto;
 import com.nrecinos.backend.models.dtos.voucher.CreateVoucherDto;
 import com.nrecinos.backend.models.dtos.voucher.VoucherInfoDto;
 import com.nrecinos.backend.models.entities.user.User;
@@ -44,18 +45,21 @@ public class VoucherServiceImpl implements VoucherService{
 	}
 
 	@Override
-	public Voucher findOne(Integer id) {
+	public VoucherInfoDto findOne(Integer id) {
 		Voucher voucher = voucherRepository.findOneById(id);
 		if (voucher == null) {			
 			return null;
 		}
-		return voucher;
+		return this.serializeVoucher(voucher);
 	}
 
 	@Override
-	public Voucher changeOwner(Integer currentOwner, Integer newOwner) {
-		// TODO Auto-generated method stub
-		return null;
+	public VoucherInfoDto changeOwner(Integer id, ChangeOwnerDto changeOwnerDto) {
+		Voucher voucher = voucherRepository.findOneById(id);
+		User user = userRepository.findOneById(changeOwnerDto.getNewOwnerId());
+		voucher.setUser(user);
+		Voucher updatedVoucher = this.save(voucher);
+		return this.serializeVoucher(updatedVoucher);
 	}
 
 	@Override
