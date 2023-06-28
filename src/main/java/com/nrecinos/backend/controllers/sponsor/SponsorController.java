@@ -71,6 +71,7 @@ public class SponsorController {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
 
+
 		SponsorInfoDto sponsor = sponsorService.findOne(code);
 		if(sponsor == null) {
 			return new ResponseEntity<>("Sponsor not Found", HttpStatus.NOT_FOUND);
