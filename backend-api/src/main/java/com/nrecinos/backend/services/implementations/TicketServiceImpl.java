@@ -11,21 +11,27 @@ import com.nrecinos.backend.models.dtos.ticket.TicketInfoDto;
 import com.nrecinos.backend.models.dtos.ticket.UpdateTicketDto;
 import com.nrecinos.backend.models.entities.sponsor.Sponsor;
 import com.nrecinos.backend.models.entities.ticket.Ticket;
+import com.nrecinos.backend.models.entities.voucher.Voucher;
 import com.nrecinos.backend.repositories.TicketRepository;
 import com.nrecinos.backend.services.TicketService;
+import com.nrecinos.backend.services.VoucherService;
 
 @Service
 public class TicketServiceImpl implements TicketService{
 
 	@Autowired
 	private TicketRepository ticketRepository;
+	@Autowired
+	private VoucherService voucherService;
 	
 	@Override
 	public TicketInfoDto create(CreateTicketDto info) {
+		Voucher voucher = voucherService.findOne(info.getVoucherId());
 		Ticket newTicket = new Ticket(
 				info.getTitle(),
 				info.getDescription(),
-				info.getVoucher());
+				voucher
+				);
 		
 		Ticket saveTicket = this.save(newTicket);
 		TicketInfoDto ticketInfo = this.serializeTicketInfoDto(saveTicket);
@@ -35,14 +41,13 @@ public class TicketServiceImpl implements TicketService{
 
 	@Override
 	public Ticket save(Ticket ticket) {
-	
 		return ticketRepository.save(ticket);
 	}
 
 	@Override
-	public List<Ticket> findAll() {
-		// TODO Auto-generated method stub
-		return ticketRepository.findAll();
+	public List<Ticket> findAll(Integer id) {
+		List<Ticket> tickets = ticketRepository.findAllByVoucherId(id);
+		return tickets;
 	}
 
 	@Override

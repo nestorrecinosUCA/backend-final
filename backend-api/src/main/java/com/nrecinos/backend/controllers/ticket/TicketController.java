@@ -1,5 +1,8 @@
 package com.nrecinos.backend.controllers.ticket;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,28 +18,38 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nrecinos.backend.models.dtos.ticket.CreateTicketDto;
 import com.nrecinos.backend.models.dtos.ticket.TicketInfoDto;
 import com.nrecinos.backend.models.dtos.ticket.UpdateTicketDto;
+import com.nrecinos.backend.models.entities.ticket.Ticket;
+import com.nrecinos.backend.models.entities.voucher.Voucher;
+import com.nrecinos.backend.services.TicketService;
+import com.nrecinos.backend.services.VoucherService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/ticket")
+@RequestMapping("/tickets")
 public class TicketController {
+	@Autowired
+	TicketService ticketService;
+	@Autowired
+	VoucherService voucherService;
 
-	@PostMapping("/")
-	ResponseEntity<?> create(@RequestBody @Valid CreateTicketDto craeteTicketDto, BindingResult validations){
+	@PostMapping("")
+	ResponseEntity<?> create(@RequestBody @Valid CreateTicketDto createTicketDto, BindingResult validations){
 		if(validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		Voucher voucher = voucherService.findOne(createTicketDto.getVoucherId());
+		if (voucher == null) {
+			return new ResponseEntity<>("Voucher not found", HttpStatus.CREATED);
+		}
+		TicketInfoDto newTicket = ticketService.create(createTicketDto);
+		return new ResponseEntity<>(newTicket, HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/")
-	ResponseEntity<?> getAll(){
-		//List<Ticket> ticket = ticketService.getAll();
-		//if(ticket == null) {
-		//	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		//}
-		return new ResponseEntity<>("All ticket", HttpStatus.OK);
+	@GetMapping("/voucher/{id}")
+	ResponseEntity<?> getAll(@PathVariable(name = "id") Integer id){
+		List<Ticket> tickets = ticketService.findAll(id);
+		return new ResponseEntity<>(tickets, HttpStatus.OK);
 	} 
 	
 	@GetMapping("/{code}")

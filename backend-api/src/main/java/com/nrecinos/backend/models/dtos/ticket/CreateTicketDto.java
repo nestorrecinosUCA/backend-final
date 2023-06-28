@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class CreateTicketDto {
 	String title;
 	String description;
-	Voucher voucher;
+	Integer voucherId;
 }

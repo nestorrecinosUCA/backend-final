@@ -35,7 +35,6 @@ public class Ticket {
 	private String description;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ticketId")
 	@ToString.Exclude
 	private Voucher voucher;
 	
