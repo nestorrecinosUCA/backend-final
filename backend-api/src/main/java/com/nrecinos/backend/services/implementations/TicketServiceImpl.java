@@ -11,21 +11,30 @@ import com.nrecinos.backend.models.dtos.ticket.TicketInfoDto;
 import com.nrecinos.backend.models.dtos.ticket.UpdateTicketDto;
 import com.nrecinos.backend.models.entities.sponsor.Sponsor;
 import com.nrecinos.backend.models.entities.ticket.Ticket;
+import com.nrecinos.backend.models.entities.voucher.Voucher;
 import com.nrecinos.backend.repositories.TicketRepository;
+import com.nrecinos.backend.repositories.VoucherRepository;
 import com.nrecinos.backend.services.TicketService;
+import com.nrecinos.backend.services.VoucherService;
 
 @Service
 public class TicketServiceImpl implements TicketService{
 
 	@Autowired
 	private TicketRepository ticketRepository;
+	@Autowired
+	private VoucherService voucherService;
+	@Autowired
+	VoucherRepository voucherRepository;
 	
 	@Override
 	public TicketInfoDto create(CreateTicketDto info) {
+		Voucher voucher = voucherRepository.findOneById(info.getVoucherId());
 		Ticket newTicket = new Ticket(
 				info.getTitle(),
 				info.getDescription(),
-				info.getVoucher());
+				voucher
+				);
 		
 		Ticket saveTicket = this.save(newTicket);
 		TicketInfoDto ticketInfo = this.serializeTicketInfoDto(saveTicket);
@@ -35,14 +44,17 @@ public class TicketServiceImpl implements TicketService{
 
 	@Override
 	public Ticket save(Ticket ticket) {
-	
 		return ticketRepository.save(ticket);
 	}
 
 	@Override
-	public List<Ticket> findAll() {
-		// TODO Auto-generated method stub
-		return ticketRepository.findAll();
+	public List<TicketInfoDto> findAll(Integer id) {
+		List<Ticket> tickets = ticketRepository.findAllByVoucherId(id);
+		List<TicketInfoDto> serializedTickets = tickets
+				.stream()
+				.map(ticket -> this.serializeTicketInfoDto(ticket))
+				.toList();
+		return serializedTickets;
 	}
 
 	@Override
@@ -64,12 +76,11 @@ public class TicketServiceImpl implements TicketService{
 	@Override
 	public void delete(Integer code) {
 		ticketRepository.deleteById(code);
-		
 	}
 	
 	@Override
 	public TicketInfoDto serializeTicketInfoDto(Ticket ticket) {
-		return new TicketInfoDto(ticket.getTitle(), ticket.getDescription(), ticket.getVoucher());
+		return new TicketInfoDto(ticket.getId(), ticket.getTitle(), ticket.getDescription(), ticket.getVoucher().getId());
 	}
 
 }

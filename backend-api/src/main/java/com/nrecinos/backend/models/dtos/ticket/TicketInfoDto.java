@@ -9,7 +9,11 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class TicketInfoDto {
+	Integer id;
 	String title;
 	String description;
-	Voucher voucher;
+	Integer voucherId;
+	//String eventName;
+	//Float Price; TODO: Add when the relationship is complete
+	
 }

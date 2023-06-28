@@ -22,7 +22,7 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "ticket")
+@Table(name = "ticket", schema="public")
 public class Ticket {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,6 @@ public class Ticket {
 	private String description;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ticketId")
 	@ToString.Exclude
 	private Voucher voucher;
 	
