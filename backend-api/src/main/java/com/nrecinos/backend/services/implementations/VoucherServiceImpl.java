@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nrecinos.backend.models.dtos.voucher.CreateVoucherDto;
 import com.nrecinos.backend.models.dtos.voucher.VoucherInfoDto;
+import com.nrecinos.backend.models.entities.user.User;
 import com.nrecinos.backend.models.entities.voucher.Voucher;
 import com.nrecinos.backend.repositories.UserRepository;
 import com.nrecinos.backend.repositories.VoucherRepository;
@@ -26,6 +28,19 @@ public class VoucherServiceImpl implements VoucherService{
 				.map(voucher -> this.serializeVoucher(voucher))
 				.toList();
 		return serializedVouchers;
+	}
+	
+	@Override
+	public VoucherInfoDto create(CreateVoucherDto createVoucherDto) {
+		User user = userRepository.findOneById(createVoucherDto.getUserId());
+		Voucher newVoucher = new Voucher(createVoucherDto.getQuantity(), createVoucherDto.getTotal(), user);
+		Voucher savedVoucher = this.save(newVoucher);
+		return this.serializeVoucher(savedVoucher);
+	}
+	
+	@Override
+	public Voucher save(Voucher voucher) {
+		return voucherRepository.save(voucher);
 	}
 
 	@Override
