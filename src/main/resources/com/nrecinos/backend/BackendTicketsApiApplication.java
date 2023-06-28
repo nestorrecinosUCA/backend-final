@@ -17,6 +17,7 @@ public class BackendTicketsApiApplication {
 	}
 
 	public static void main(String[] args) {
+		System.setProperty("server.address", "0.0.0.0");
 		SpringApplication.run(BackendTicketsApiApplication.class, args);
 	}
 
