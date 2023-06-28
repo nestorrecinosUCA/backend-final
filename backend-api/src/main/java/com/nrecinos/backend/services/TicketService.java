@@ -10,7 +10,7 @@ import com.nrecinos.backend.models.entities.ticket.Ticket;
 public interface TicketService {
 	TicketInfoDto create(CreateTicketDto createTicketDto);
 	Ticket save(Ticket ticket);
-	List<Ticket> findAll(Integer id);
+	List<TicketInfoDto> findAll(Integer id);
 	TicketInfoDto findOne(Integer id);
 	TicketInfoDto update(Integer id, UpdateTicketDto updateTicketDto);
 	void delete(Integer id);

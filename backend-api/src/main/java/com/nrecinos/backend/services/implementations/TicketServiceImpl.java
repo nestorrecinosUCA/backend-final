@@ -45,9 +45,13 @@ public class TicketServiceImpl implements TicketService{
 	}
 
 	@Override
-	public List<Ticket> findAll(Integer id) {
+	public List<TicketInfoDto> findAll(Integer id) {
 		List<Ticket> tickets = ticketRepository.findAllByVoucherId(id);
-		return tickets;
+		List<TicketInfoDto> serializedTickets = tickets
+				.stream()
+				.map(ticket -> this.serializeTicketInfoDto(ticket))
+				.toList();
+		return serializedTickets;
 	}
 
 	@Override
@@ -74,7 +78,7 @@ public class TicketServiceImpl implements TicketService{
 	
 	@Override
 	public TicketInfoDto serializeTicketInfoDto(Ticket ticket) {
-		return new TicketInfoDto(ticket.getTitle(), ticket.getDescription(), ticket.getVoucher());
+		return new TicketInfoDto(ticket.getId(), ticket.getTitle(), ticket.getDescription(), ticket.getVoucher().getId());
 	}
 
 }

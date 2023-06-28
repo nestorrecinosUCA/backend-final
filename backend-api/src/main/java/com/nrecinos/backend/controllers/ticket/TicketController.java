@@ -48,17 +48,17 @@ public class TicketController {
 	
 	@GetMapping("/voucher/{id}")
 	ResponseEntity<?> getAll(@PathVariable(name = "id") Integer id){
-		List<Ticket> tickets = ticketService.findAll(id);
+		List<TicketInfoDto> tickets = ticketService.findAll(id);
 		return new ResponseEntity<>(tickets, HttpStatus.OK);
 	} 
 	
-	@GetMapping("/{code}")
-	ResponseEntity<?> getTicketById(@PathVariable(name = "code") Integer code){
-		TicketInfoDto ticket = null; //TODO: Update with service method
+	@GetMapping("/{id}")
+	ResponseEntity<?> getTicketById(@PathVariable(name = "id") Integer id){
+		TicketInfoDto ticket = ticketService.findOne(id); //TODO: Update with service method
 		if(ticket == null) {
 			return new ResponseEntity<>("Ticket not Found", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		return new ResponseEntity<>(ticket, HttpStatus.OK);
 	}
 	
 	@PatchMapping("/{code}")
@@ -70,8 +70,13 @@ public class TicketController {
 		
 	}
 	
-	@DeleteMapping("/{code}")
-	ResponseEntity<?> delete(@PathVariable(name = "code") Integer code){
+	@DeleteMapping("/{id}")
+	ResponseEntity<?> delete(@PathVariable(name = "id") Integer id){
+		TicketInfoDto ticket = ticketService.findOne(id); //TODO: Update with service method
+		if(ticket == null) {
+			return new ResponseEntity<>("Ticket not Found", HttpStatus.NOT_FOUND);
+		}
+		ticketService.delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
