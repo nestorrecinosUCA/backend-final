@@ -9,15 +9,24 @@ import org.springframework.stereotype.Service;
 import com.nrecinos.backend.models.dtos.user.CreateUserDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
 import com.nrecinos.backend.models.dtos.user.UserInfoDto;
+import com.nrecinos.backend.models.entities.role.Role;
+import com.nrecinos.backend.models.entities.role.UserRoles;
 import com.nrecinos.backend.models.entities.user.User;
+import com.nrecinos.backend.models.entities.users_roles_role.UsersXRoles;
 import com.nrecinos.backend.repositories.UserRepository;
+import com.nrecinos.backend.repositories.UsersXRolesRepository;
+import com.nrecinos.backend.services.RoleService;
 import com.nrecinos.backend.services.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
-	
+	@Autowired
+	private UsersXRolesRepository usersXRolesRepository;
+
+	@Autowired
+	RoleService roleService;
 	@Autowired
 	public PasswordEncoder passwordEncoder;
 	
@@ -26,6 +35,9 @@ public class UserServiceImpl implements UserService {
 		User createUser = new User(createUserDto.getName(), createUserDto.getLastname(), createUserDto.getPhoneNumber(), createUserDto.getEmail(), passwordEncoder.encode(createUserDto.getPassword()), createUserDto.getUsername(), false);
 		User saveUser = this.save(createUser);
 		UserInfoDto userInfo = this.serializeUserInfoDto(saveUser);
+		Role userRole = roleService.getOneByName(UserRoles.USER.getDisplayName());
+		UsersXRoles newRoleForUser = new UsersXRoles(saveUser, userRole);
+		usersXRolesRepository.save(newRoleForUser);
 		return userInfo;
 	}
 

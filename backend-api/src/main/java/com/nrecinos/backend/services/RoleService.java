@@ -6,5 +6,5 @@ import com.nrecinos.backend.models.entities.role.Role;
 
 public interface RoleService {
 	List<Role> getAll();
-	Role getOneById(Integer id);
+	Role getOneByName(String name);
 }
