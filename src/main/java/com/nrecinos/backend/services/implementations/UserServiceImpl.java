@@ -24,11 +24,13 @@ import com.nrecinos.backend.services.UserService;
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
+  
 	@Autowired
 	private UsersXRolesRepository usersXRolesRepository;
 
 	@Autowired
 	RoleService roleService;
+
 	@Autowired
 	public PasswordEncoder passwordEncoder;
 	
