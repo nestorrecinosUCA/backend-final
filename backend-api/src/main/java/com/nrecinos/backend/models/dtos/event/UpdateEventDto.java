@@ -31,4 +31,6 @@ public class UpdateEventDto {
 	
 	@Positive()
 	Integer categoryId;
+	
+	String image;
 }

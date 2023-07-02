@@ -25,6 +25,9 @@ public class CreateEventDto {
 
 	@NotEmpty(message = "hour must not be empty")
 	String hour;
+	
+	@NotEmpty(message = "image must not be empty")
+	String image;
 
 	@NotNull(message ="duration must not be empty")
 	Float duration;

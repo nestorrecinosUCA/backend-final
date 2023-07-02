@@ -17,6 +17,7 @@ public class EventInfoDto {
 	String hour;
 	Float duration;
 	Integer assistantsCapacity;
+	String image;
 	//String user;
 	//String tier;
 	//Integer category;
