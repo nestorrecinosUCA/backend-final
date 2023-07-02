@@ -11,23 +11,25 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "user_roles_role")
 public class UsersXRoles {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "userId")
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@ToString.Exclude
 	private User user;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "roleId")
-	@ToString.Exclude
+	@ManyToOne(fetch = FetchType.LAZY)
+	//@ToString.Exclude
 	private Role role;
 
 	public UsersXRoles(User user, Role role) {

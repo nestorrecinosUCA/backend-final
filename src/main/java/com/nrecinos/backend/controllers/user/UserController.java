@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nrecinos.backend.models.dtos.user.CreateUserDto;
 import com.nrecinos.backend.models.dtos.user.UpdatePasswordDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
+import com.nrecinos.backend.models.dtos.user.UpdateUserRoleDto;
 import com.nrecinos.backend.models.dtos.user.UserInfoDto;
 import com.nrecinos.backend.models.entities.user.User;
 import com.nrecinos.backend.services.UserService;
@@ -101,6 +102,32 @@ public class UserController {
 		return new ResponseEntity<>(updatedMessage, HttpStatus.OK);
 	}
 	
+	@PatchMapping("/add-role")
+	ResponseEntity<?> addRole(@RequestBody @Valid UpdateUserRoleDto addRoleDto, BindingResult validations) {
+		UserInfoDto existingUser = userService.findOne(addRoleDto.getUserId());
+		if (existingUser == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		String updateMessage = userService.addRoleToUser(addRoleDto);
+		if (updateMessage == null) {
+			return new ResponseEntity<>("Role already assigned", HttpStatus.CONFLICT);
+		}
+		return new ResponseEntity<>(updateMessage, HttpStatus.NOT_FOUND);
+	}
+	
+	@DeleteMapping("/remove-role")
+	ResponseEntity<?> removeRole(@RequestBody @Valid UpdateUserRoleDto addRoleDto, BindingResult validations) {
+		UserInfoDto existingUser = userService.findOne(addRoleDto.getUserId());
+		if (existingUser == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		String updateMessage = userService.removeRoleFromUser(addRoleDto);
+		if (updateMessage == null) {
+			return new ResponseEntity<>("That role was not assigned to the user", HttpStatus.CONFLICT);
+		}
+		return new ResponseEntity<>(updateMessage, HttpStatus.NOT_FOUND);
+	}
+  
 	@DeleteMapping("/{id}")
 	ResponseEntity<?> delete(@PathVariable(name = "id") Integer id) {
 		UserInfoDto existingUser = userService.findOne(id);
