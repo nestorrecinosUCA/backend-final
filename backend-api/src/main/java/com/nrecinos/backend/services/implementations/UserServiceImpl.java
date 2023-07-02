@@ -1,5 +1,6 @@
 package com.nrecinos.backend.services.implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,16 +9,26 @@ import org.springframework.stereotype.Service;
 
 import com.nrecinos.backend.models.dtos.user.CreateUserDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
+import com.nrecinos.backend.models.dtos.user.UpdateUserRoleDto;
 import com.nrecinos.backend.models.dtos.user.UserInfoDto;
+import com.nrecinos.backend.models.entities.role.Role;
+import com.nrecinos.backend.models.entities.role.UserRoles;
 import com.nrecinos.backend.models.entities.user.User;
+import com.nrecinos.backend.models.entities.users_roles_role.UsersXRoles;
 import com.nrecinos.backend.repositories.UserRepository;
+import com.nrecinos.backend.repositories.UsersXRolesRepository;
+import com.nrecinos.backend.services.RoleService;
 import com.nrecinos.backend.services.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
-	
+	@Autowired
+	private UsersXRolesRepository usersXRolesRepository;
+
+	@Autowired
+	RoleService roleService;
 	@Autowired
 	public PasswordEncoder passwordEncoder;
 	
@@ -26,6 +37,9 @@ public class UserServiceImpl implements UserService {
 		User createUser = new User(createUserDto.getName(), createUserDto.getLastname(), createUserDto.getPhoneNumber(), createUserDto.getEmail(), passwordEncoder.encode(createUserDto.getPassword()), createUserDto.getUsername(), false);
 		User saveUser = this.save(createUser);
 		UserInfoDto userInfo = this.serializeUserInfoDto(saveUser);
+		Role userRole = roleService.getOneByName(UserRoles.USER.getDisplayName());
+		UsersXRoles newRoleForUser = new UsersXRoles(saveUser, userRole);
+		usersXRolesRepository.save(newRoleForUser);
 		return userInfo;
 	}
 
@@ -95,7 +109,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserInfoDto serializeUserInfoDto(User user) {
-		return new UserInfoDto(user.getName(), user.getLastname(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getIsVerified());
+		List<String> roles = new ArrayList<>();
+		if (!user.getUsersXRole().isEmpty()) {
+			roles = user.getUsersXRole().stream().map(x -> x.getRole().getTitle()).toList();
+		}
+		return new UserInfoDto(user.getId(), user.getName(), user.getLastname(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getIsVerified(), roles);
 	}
 
 	@Override
@@ -112,6 +130,30 @@ public class UserServiceImpl implements UserService {
 		User userToUpdate = userRepository.findOneById(id);
 		userToUpdate.setPassword(passwordEncoder.encode(password));
 		return "Password updated successfully";
+	}
+
+	@Override
+	public String addRoleToUser(UpdateUserRoleDto addRoleDto) {
+		User user = userRepository.findOneById(addRoleDto.getUserId());
+		Role roleToUpdate = roleService.getOneByName(addRoleDto.getRole());
+		UsersXRoles existingUserXRole = usersXRolesRepository.findOneByUserIdAndRoleId(addRoleDto.getUserId(), roleToUpdate.getId());
+		if (existingUserXRole != null) {
+			return null;
+		}
+		UsersXRoles newRole = new UsersXRoles(user, roleToUpdate);
+		usersXRolesRepository.save(newRole);
+		return "Role '" + roleToUpdate.getTitle() + "' was assigned correctly to the user";
+	}
+
+	@Override
+	public String removeRoleFromUser(UpdateUserRoleDto removeRoleDto) {
+		Role roleToRemove = roleService.getOneByName(removeRoleDto.getRole());
+		UsersXRoles existingUserXRole = usersXRolesRepository.findOneByUserIdAndRoleId(removeRoleDto.getUserId(), roleToRemove.getId());
+		if (existingUserXRole == null) {
+			return null;
+		}
+		usersXRolesRepository.deleteById(existingUserXRole.getId());
+		return "Role '" + roleToRemove .getTitle() + "' has been removed from user";
 	}
 
 }

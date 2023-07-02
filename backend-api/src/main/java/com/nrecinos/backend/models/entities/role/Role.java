@@ -15,7 +15,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "role")
 public class Role {
@@ -23,8 +26,8 @@ public class Role {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
 	
-	@Column(name = "name")
-	String name;
+	@Column(name = "title")
+	String title;
 	
 	@Column(name = "description")
 	String description;
@@ -33,9 +36,9 @@ public class Role {
 	@JsonIgnore
 	private List<UsersXRoles> usersXRole;
 
-	public Role(String name, String description) {
+	public Role(String title, String description) {
 		super();
-		this.name = name;
+		this.title = title;
 		this.description = description;
 	}
 	
