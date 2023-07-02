@@ -104,7 +104,28 @@ public class UserController {
 	
 	@PatchMapping("/add-role")
 	ResponseEntity<?> addRole(@RequestBody @Valid UpdateUserRoleDto addRoleDto, BindingResult validations) {
-		String updateMessage = userService.addRoleToUser(null, null)
+		UserInfoDto existingUser = userService.findOne(addRoleDto.getUserId());
+		if (existingUser == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		String updateMessage = userService.addRoleToUser(addRoleDto);
+		if (updateMessage == null) {
+			return new ResponseEntity<>("Role already assigned", HttpStatus.CONFLICT);
+		}
+		return new ResponseEntity<>(updateMessage, HttpStatus.NOT_FOUND);
+	}
+	
+	@DeleteMapping("/remove-role")
+	ResponseEntity<?> removeRole(@RequestBody @Valid UpdateUserRoleDto addRoleDto, BindingResult validations) {
+		UserInfoDto existingUser = userService.findOne(addRoleDto.getUserId());
+		if (existingUser == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+		String updateMessage = userService.removeRoleFromUser(addRoleDto);
+		if (updateMessage == null) {
+			return new ResponseEntity<>("That role was not assigned to the user", HttpStatus.CONFLICT);
+		}
+		return new ResponseEntity<>(updateMessage, HttpStatus.NOT_FOUND);
 	}
 	
 	@DeleteMapping("/{id}")
