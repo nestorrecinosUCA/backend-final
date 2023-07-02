@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nrecinos.backend.models.dtos.user.CreateUserDto;
 import com.nrecinos.backend.models.dtos.user.UpdatePasswordDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
+import com.nrecinos.backend.models.dtos.user.UpdateUserRoleDto;
 import com.nrecinos.backend.models.dtos.user.UserInfoDto;
 import com.nrecinos.backend.models.entities.user.User;
 import com.nrecinos.backend.services.UserService;
@@ -99,6 +100,11 @@ public class UserController {
 		}
 		String updatedMessage = userService.updatePassword(id, updatePasswordDto.getPassword());
 		return new ResponseEntity<>(updatedMessage, HttpStatus.OK);
+	}
+	
+	@PatchMapping("/add-role")
+	ResponseEntity<?> addRole(@RequestBody @Valid UpdateUserRoleDto addRoleDto, BindingResult validations) {
+		String updateMessage = userService.addRoleToUser(null, null)
 	}
 	
 	@DeleteMapping("/{id}")

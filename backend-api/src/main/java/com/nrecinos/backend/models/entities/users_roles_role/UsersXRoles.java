@@ -24,14 +24,12 @@ public class UsersXRoles {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "userId")
+	@ManyToOne(fetch = FetchType.LAZY)
 	@ToString.Exclude
 	private User user;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "roleId")
-	@ToString.Exclude
+	@ManyToOne(fetch = FetchType.LAZY)
+	//@ToString.Exclude
 	private Role role;
 
 	public UsersXRoles(User user, Role role) {
