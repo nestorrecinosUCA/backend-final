@@ -21,7 +21,6 @@ import com.nrecinos.backend.models.dtos.user.UpdatePasswordDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserRoleDto;
 import com.nrecinos.backend.models.dtos.user.UserInfoDto;
-import com.nrecinos.backend.models.entities.user.User;
 import com.nrecinos.backend.services.UserService;
 
 import jakarta.validation.Valid;

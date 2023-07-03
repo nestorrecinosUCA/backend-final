@@ -64,6 +64,9 @@ public class Event {
 	@Column(name = "assistants_capacity")
 	private Integer assistantsCapacity;
 	
+	@Column(name = "image")
+	private String image;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@ToString.Exclude
 	private User user;
@@ -85,7 +88,7 @@ public class Event {
 	private List<Tier> tiers;
 	
 	public Event(String title, String description, Date date, String hour, Float duration,
-			Integer assistants, Integer assistantsCapacity, User user, Category category, Boolean isActive) {
+			Integer assistants, Integer assistantsCapacity, User user, Category category, Boolean isActive, String image) {
 		super();
 		this.title = title;
 		this.description = description;
@@ -97,5 +100,6 @@ public class Event {
 		this.assistantsCapacity = assistantsCapacity;
 		this.user = user;
 		this.category = category;
+		this.image = image;
 	}
 }

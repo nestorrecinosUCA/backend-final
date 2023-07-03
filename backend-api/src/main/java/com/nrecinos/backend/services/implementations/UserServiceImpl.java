@@ -13,19 +13,29 @@ import com.nrecinos.backend.models.dtos.user.UpdateUserRoleDto;
 import com.nrecinos.backend.models.dtos.user.UserInfoDto;
 import com.nrecinos.backend.models.entities.role.Role;
 import com.nrecinos.backend.models.entities.role.UserRoles;
+import com.nrecinos.backend.models.entities.token.Token;
 import com.nrecinos.backend.models.entities.user.User;
 import com.nrecinos.backend.models.entities.users_roles_role.UsersXRoles;
+import com.nrecinos.backend.repositories.TokenRepository;
 import com.nrecinos.backend.repositories.UserRepository;
 import com.nrecinos.backend.repositories.UsersXRolesRepository;
 import com.nrecinos.backend.services.RoleService;
 import com.nrecinos.backend.services.UserService;
+import com.nrecinos.backend.utils.JWTTools;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
 	@Autowired
+	private JWTTools jwtTools;
+	
+	@Autowired
 	private UserRepository userRepository;
 	@Autowired
 	private UsersXRolesRepository usersXRolesRepository;
+	@Autowired
+	private TokenRepository tokenRepository;
 
 	@Autowired
 	RoleService roleService;
@@ -36,11 +46,11 @@ public class UserServiceImpl implements UserService {
 	public UserInfoDto create(CreateUserDto createUserDto) {
 		User createUser = new User(createUserDto.getName(), createUserDto.getLastname(), createUserDto.getPhoneNumber(), createUserDto.getEmail(), passwordEncoder.encode(createUserDto.getPassword()), createUserDto.getUsername(), false);
 		User saveUser = this.save(createUser);
-		UserInfoDto userInfo = this.serializeUserInfoDto(saveUser);
 		Role userRole = roleService.getOneByName(UserRoles.USER.getDisplayName());
 		UsersXRoles newRoleForUser = new UsersXRoles(saveUser, userRole);
 		usersXRolesRepository.save(newRoleForUser);
-		return userInfo;
+		UserInfoDto userWithRoles = this.findOne(saveUser.getId());
+		return userWithRoles;
 	}
 
 	@Override
@@ -110,7 +120,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserInfoDto serializeUserInfoDto(User user) {
 		List<String> roles = new ArrayList<>();
-		if (!user.getUsersXRole().isEmpty()) {
+		if (user.getUsersXRole() != null) {
 			roles = user.getUsersXRole().stream().map(x -> x.getRole().getTitle()).toList();
 		}
 		return new UserInfoDto(user.getId(), user.getName(), user.getLastname(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getIsVerified(), roles);
@@ -155,5 +165,49 @@ public class UserServiceImpl implements UserService {
 		usersXRolesRepository.deleteById(existingUserXRole.getId());
 		return "Role '" + roleToRemove .getTitle() + "' has been removed from user";
 	}
+	
+	// TOKEN MANAGEMENT
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public Token registerToken(User user) throws Exception {
+		cleanTokens(user);
+		
+		String tokenString = jwtTools.generateToken(user);
+		Token token = new Token(tokenString, user);
+		
+		tokenRepository.save(token);
+		
+		return token;
+	}
+	
+	@Override
+	public Boolean isTokenValid(User user, String token) {
+		try {
+			cleanTokens(user);
+			List<Token> tokens = tokenRepository.findByUserAndActive(user, true);
+			
+			tokens.stream()
+				.filter(tk -> tk.getContent().equals(token))
+				.findAny()
+				.orElseThrow(() -> new Exception());
+			
+			return true;
+		} catch (Exception e) {
+			return false;
+		}		
+	}
 
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public void cleanTokens(User user) throws Exception {
+		List<Token> tokens = tokenRepository.findByUserAndActive(user, true);
+		
+		tokens.forEach(token -> {
+			if(!jwtTools.verifyToken(token.getContent())) {
+				token.setActive(false);
+				tokenRepository.save(token);
+			}
+		});
+		
+	}
 }
