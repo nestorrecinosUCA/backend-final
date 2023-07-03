@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nrecinos.backend.models.dtos.event.CreateEventDto;
 import com.nrecinos.backend.models.dtos.event.EventInfoDto;
 import com.nrecinos.backend.models.dtos.event.UpdateEventDto;
+import com.nrecinos.backend.models.dtos.general.MessageDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
 import com.nrecinos.backend.models.entities.category.Category;
 import com.nrecinos.backend.models.entities.event.Event;
@@ -27,7 +28,9 @@ import com.nrecinos.backend.repositories.CategoryRepository;
 import com.nrecinos.backend.repositories.EventRepository;
 import com.nrecinos.backend.repositories.UserRepository;
 import com.nrecinos.backend.services.EventService;
+import com.nrecinos.backend.utils.JWTTools;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -35,16 +38,19 @@ import jakarta.validation.Valid;
 @RequestMapping("/events")
 public class EventController {
 	@Autowired
-	EventService eventService;
+	private EventService eventService;
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 	
 	@Autowired
-	CategoryRepository categoryRepository;
+	private CategoryRepository categoryRepository;
 	
 	@Autowired
-	EventRepository eventRepository;
+	private EventRepository eventRepository;
+	
+	@Autowired
+	private JWTTools jwtTools;
 	
 	@GetMapping("")
 	ResponseEntity<?> getAll() {
@@ -62,12 +68,14 @@ public class EventController {
 	}
 	
 	@PostMapping("")
-	ResponseEntity<?> create(@RequestBody @Valid CreateEventDto createEventDto, BindingResult validations) {
+	ResponseEntity<?> create(@RequestBody @Valid CreateEventDto createEventDto, BindingResult validations, HttpServletRequest request) {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-		System.out.println(createEventDto);
-		User user = userRepository.findOneById(createEventDto.getUserId());
+
+		String token = jwtTools.extractTokenFromRequest(request);
+		String username = jwtTools.getUsernameFrom(token);
+		User user = userRepository.findByUsernameOrEmail(username, username);
 		if (user == null) {
 			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 		}
@@ -76,7 +84,7 @@ public class EventController {
 			return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
 		}
 		eventService.create(createEventDto, user, category);
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		return new ResponseEntity<>(new MessageDto("Event created"), HttpStatus.CREATED);
 	}
 
 	@PatchMapping("/{id}")

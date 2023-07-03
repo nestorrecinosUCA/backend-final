@@ -43,7 +43,7 @@ public class Event {
 	@Column(name = "title")
 	private String title;
 	
-	@Column(name = "description")
+	@Column(name = "decription") // TODO: Rename in database
 	private String description;
 	
 	@Column(name = "date")

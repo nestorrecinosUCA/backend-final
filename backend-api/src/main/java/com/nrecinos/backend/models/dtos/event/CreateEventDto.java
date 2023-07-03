@@ -36,10 +36,6 @@ public class CreateEventDto {
 	@NotNull(message = "assistantCapacity must not be null")
 	Integer assistantsCapacity;
 
-	@NotNull(message = "userId must not be empty")
-	@Positive()
-	Integer userId;
-
 	@NotNull(message = "categoryId must not be null")
 	@Positive()
 	Integer categoryId;
