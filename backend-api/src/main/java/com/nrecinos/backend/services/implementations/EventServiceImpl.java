@@ -1,6 +1,5 @@
 package com.nrecinos.backend.services.implementations;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,18 @@ public class EventServiceImpl implements EventService {
 	
 	@Override
 	public EventInfoDto create(CreateEventDto createEventDto, User user, Category category) {
-		Event event = new Event(createEventDto.getTitle(), createEventDto.getDescription(), createEventDto.getDate(), createEventDto.getHour(), createEventDto.getDuration(), 0, createEventDto.getAssistantsCapacity(), user, category, true);
+		Event event = new Event(
+				createEventDto.getTitle(),
+				createEventDto.getDescription(),
+				createEventDto.getDate(),
+				createEventDto.getHour(),
+				createEventDto.getDuration(),
+				0,
+				createEventDto.getAssistantsCapacity(),
+				user,
+				category,
+				true,
+				createEventDto.getImage());
 		Event savedEvent = this.save(event);
 		return this.serializeEvent(savedEvent);
 	}
@@ -77,6 +87,9 @@ public class EventServiceImpl implements EventService {
         if (updateEventDto.getAssistantsCapacity() != null) {
             eventToUpdate.setAssistantsCapacity(updateEventDto.getAssistantsCapacity());
         }
+        if (updateEventDto.getImage() != null) {
+        	eventToUpdate.setImage(updateEventDto.getImage());
+        }
         if (updateEventDto.getCategoryId() != null) {
         	Category category = categoryRepository.findOneById(updateEventDto.getCategoryId());
         	eventToUpdate.setCategory(category);
@@ -99,7 +112,15 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public EventInfoDto serializeEvent(Event event) {
-		return new EventInfoDto(event.getId(), event.getTitle(), event.getDescription(), event.getDate(), event.getHour(),event.getDuration(),event.getAssistantsCapacity());
+		return new EventInfoDto(
+				event.getId(),
+				event.getTitle(),
+				event.getDescription(),
+				event.getDate(),
+				event.getHour(),
+				event.getDuration(),
+				event.getAssistantsCapacity(),
+				event.getImage());
 	}
 
 }
