@@ -44,9 +44,13 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public UserInfoDto create(CreateUserDto createUserDto) {
+		List<User> users = userRepository.findAll();
+		Role userRole = roleService.getOneByName(UserRoles.USER.getDisplayName());
+		if (users.size() == 0) {
+			userRole = roleService.getOneByName(UserRoles.ADMIN.getDisplayName());
+		}
 		User createUser = new User(createUserDto.getName(), createUserDto.getLastname(), createUserDto.getPhoneNumber(), createUserDto.getEmail(), passwordEncoder.encode(createUserDto.getPassword()), createUserDto.getUsername(), false);
 		User saveUser = this.save(createUser);
-		Role userRole = roleService.getOneByName(UserRoles.USER.getDisplayName());
 		UsersXRoles newRoleForUser = new UsersXRoles(saveUser, userRole);
 		usersXRolesRepository.save(newRoleForUser);
 		UserInfoDto userWithRoles = this.findOne(saveUser.getId());
