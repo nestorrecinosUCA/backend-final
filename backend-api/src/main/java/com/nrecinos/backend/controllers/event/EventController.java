@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +20,6 @@ import com.nrecinos.backend.models.dtos.event.CreateEventDto;
 import com.nrecinos.backend.models.dtos.event.EventInfoDto;
 import com.nrecinos.backend.models.dtos.event.UpdateEventDto;
 import com.nrecinos.backend.models.dtos.general.MessageDto;
-import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
 import com.nrecinos.backend.models.entities.category.Category;
 import com.nrecinos.backend.models.entities.event.Event;
 import com.nrecinos.backend.models.entities.user.User;
@@ -59,9 +57,9 @@ public class EventController {
 
 	@GetMapping("/{id}")
 	ResponseEntity<?> getOne(@PathVariable(name = "id")Integer id){
-		EventInfoDto event = eventService.findOne(id); // TODO: update with service
+		EventInfoDto event = eventService.findOne(id);
 		if(event == null) {
-			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDto("Event not found"), HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(event, HttpStatus.OK);
 	}
@@ -76,11 +74,11 @@ public class EventController {
 		String username = jwtTools.getUsernameFrom(token);
 		User user = userRepository.findByUsernameOrEmail(username, username);
 		if (user == null) {
-			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDto("User not found"), HttpStatus.NOT_FOUND);
 		}
 		Category category = categoryRepository.findOneById(createEventDto.getCategoryId());
 		if (category == null) {
-			return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDto("Category not found"), HttpStatus.NOT_FOUND);
 		}
 		eventService.create(createEventDto, user, category);
 		return new ResponseEntity<>(new MessageDto("Event created"), HttpStatus.CREATED);
@@ -93,7 +91,7 @@ public class EventController {
 		}
 		Event event = eventRepository.findOneById(id);
 		if (event == null) {
-			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDto("Event not found"), HttpStatus.NOT_FOUND);
 		}
 		String token = jwtTools.extractTokenFromRequest(request);
 		String username = jwtTools.getUsernameFrom(token);
@@ -104,18 +102,18 @@ public class EventController {
 		if (updateEventDto.getCategoryId() != null) {
         	Category category = categoryRepository.findOneById(updateEventDto.getCategoryId());
         	if (category == null) {
-        		return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
+        		return new ResponseEntity<>(new MessageDto("Category not found"), HttpStatus.NOT_FOUND);
         	}
         }
 		EventInfoDto eventUpdated = eventService.update(id, updateEventDto);
-		return new ResponseEntity<>(eventUpdated	, HttpStatus.OK);
+		return new ResponseEntity<>(eventUpdated, HttpStatus.OK);
 	}
 	
 	@PatchMapping("/change-status/{id}")
 	ResponseEntity<?> updateEventStatus(@PathVariable(name = "id") Integer id, HttpServletRequest request) {
-		EventInfoDto event = eventService.findOne(id); // TODO: update with service
+		EventInfoDto event = eventService.findOne(id);
 		if(event == null) {
-			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDto("Event not found"), HttpStatus.NOT_FOUND);
 		}
 		String token = jwtTools.extractTokenFromRequest(request);
 		String username = jwtTools.getUsernameFrom(token);
