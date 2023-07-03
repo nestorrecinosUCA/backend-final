@@ -51,8 +51,14 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<EventInfoDto> findAll() {
-		List<Event> events = eventRepository.findAll();
+	public List<EventInfoDto> findAll(String status) {
+		List<Event> events = null;
+		if (status.equals("all")) {
+			events = eventRepository.findAll();	
+		} else {
+			Boolean isVerified = status.equals("active") ? true : false;
+			events = eventRepository.findAllByIsActive(isVerified); 
+		}
 		List<EventInfoDto> eventsSerialized = events.stream()
 				.map(event -> this.serializeEvent(event))
 				.toList();

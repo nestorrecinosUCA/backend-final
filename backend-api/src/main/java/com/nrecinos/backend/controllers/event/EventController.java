@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nrecinos.backend.models.dtos.event.CreateEventDto;
@@ -51,11 +52,11 @@ public class EventController {
 	private JWTTools jwtTools;
 		
 	@GetMapping("")
-	ResponseEntity<?> getAll() {
-		List<EventInfoDto> events = eventService.findAll();
+	ResponseEntity<?> getAll(@RequestParam(defaultValue = "all", name = "status") String status) {
+		List<EventInfoDto> events = eventService.findAll(status);
 		return new ResponseEntity<>(events, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{id}")
 	ResponseEntity<?> getOne(@PathVariable(name = "id")Integer id){
 		EventInfoDto event = eventService.findOne(id); // TODO: update with service
