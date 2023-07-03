@@ -86,7 +86,7 @@ public class EventController {
 	}
 
 	@PatchMapping("/{id}")
-	ResponseEntity<?> update(@PathVariable(name = "id")Integer id, @RequestBody @Valid UpdateEventDto updateEventDto, BindingResult validations , HttpServletRequest request) {
+	ResponseEntity<?> update(@PathVariable(name = "id")Integer id, @RequestBody @Valid UpdateEventDto updateEventDto, BindingResult validations, HttpServletRequest request) {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
@@ -111,10 +111,16 @@ public class EventController {
 	}
 	
 	@PatchMapping("/change-status/{id}")
-	ResponseEntity<?> updateEventStatus(@PathVariable(name = "id") Integer id) {
+	ResponseEntity<?> updateEventStatus(@PathVariable(name = "id") Integer id, HttpServletRequest request) {
 		EventInfoDto event = eventService.findOne(id); // TODO: update with service
 		if(event == null) {
 			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+		}
+		String token = jwtTools.extractTokenFromRequest(request);
+		String username = jwtTools.getUsernameFrom(token);
+		User user = userRepository.findByUsernameOrEmail(username, username);
+		if (user.getId() != event.getUser().getId()) {
+			return new ResponseEntity<>(new MessageDto("Forbidden"), HttpStatus.FORBIDDEN);
 		}
 		eventService.updateStatus(id);
 		return new ResponseEntity<>(HttpStatus.OK);
