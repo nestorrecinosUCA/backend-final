@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nrecinos.backend.models.dtos.event.EventInfoDto;
+import com.nrecinos.backend.models.dtos.general.MessageDto;
 import com.nrecinos.backend.models.dtos.sponsor.CreateSponsorDto;
 import com.nrecinos.backend.models.dtos.sponsor.SponsorInfoDto;
 import com.nrecinos.backend.models.dtos.sponsor.UpdateSponsorDto;
@@ -40,7 +41,7 @@ public class SponsorController {
 		}
 		EventInfoDto event = eventService.findOne(createSponsorDto.getEventId());
 		if (event == null) {
-			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDto("Event not found"), HttpStatus.NOT_FOUND);
 		}
 		SponsorInfoDto newSponsor = sponsorService.create(createSponsorDto);
 		return new ResponseEntity<>(newSponsor, HttpStatus.CREATED);
@@ -50,7 +51,7 @@ public class SponsorController {
 	ResponseEntity<?> getAll(@PathVariable(name = "id") Integer eventId){
 		EventInfoDto event = eventService.findOne(eventId);
 		if (event == null) {
-			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDto("Event not found"), HttpStatus.NOT_FOUND);
 		}
 		List<SponsorInfoDto> sponsors = sponsorService.findAllByEventId(eventId);
 		return new ResponseEntity<>(sponsors, HttpStatus.OK);
@@ -60,7 +61,7 @@ public class SponsorController {
 	ResponseEntity<?> getSponsorById(@PathVariable(name = "code") Integer code){
 		SponsorInfoDto sponsor = sponsorService.findOne(code); //TODO: Update with service method
 		if(sponsor == null) {
-			return new ResponseEntity<>("Sponsor not Found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDto("Sponsor not Found"), HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(sponsor, HttpStatus.CREATED);
 	}
@@ -72,12 +73,12 @@ public class SponsorController {
 		}
 		SponsorInfoDto sponsor = sponsorService.findOne(code);
 		if(sponsor == null) {
-			return new ResponseEntity<>("Sponsor not Found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDto("Sponsor not Found"), HttpStatus.NOT_FOUND);
 		}
 		if (updateSponsorDto.getEventId() != null) {
 			EventInfoDto event = eventService.findOne(updateSponsorDto.getEventId());
 			if (event == null) {
-				return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>(new MessageDto("Event not found"), HttpStatus.NOT_FOUND);
 			}			
 		}
 		SponsorInfoDto sponsorUpdated = sponsorService.update(code, updateSponsorDto);
@@ -88,7 +89,7 @@ public class SponsorController {
 	ResponseEntity<?> delete(@PathVariable(name = "code") Integer code){
 		SponsorInfoDto sponsor = sponsorService.findOne(code); //TODO: Update with service method
 		if(sponsor == null) {
-			return new ResponseEntity<>("Sponsor not Found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDto("Sponsor not Found"), HttpStatus.NOT_FOUND);
 		}
 		sponsorService.delete(code);
 		return new ResponseEntity<>(HttpStatus.OK);
