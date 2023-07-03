@@ -14,12 +14,15 @@ import com.nrecinos.backend.models.entities.user.User;
 import com.nrecinos.backend.repositories.CategoryRepository;
 import com.nrecinos.backend.repositories.EventRepository;
 import com.nrecinos.backend.services.EventService;
+import com.nrecinos.backend.services.UserService;
 
 @Service
 public class EventServiceImpl implements EventService {
 	@Autowired
-	private EventRepository eventRepository;
+	private UserService userService;
 	
+	@Autowired
+	private EventRepository eventRepository;
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
@@ -48,8 +51,14 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<EventInfoDto> findAll() {
-		List<Event> events = eventRepository.findAll();
+	public List<EventInfoDto> findAll(String status) {
+		List<Event> events = null;
+		if (status.equals("all")) {
+			events = eventRepository.findAll();	
+		} else {
+			Boolean isVerified = status.equals("active") ? true : false;
+			events = eventRepository.findAllByIsActive(isVerified); 
+		}
 		List<EventInfoDto> eventsSerialized = events.stream()
 				.map(event -> this.serializeEvent(event))
 				.toList();
@@ -120,7 +129,9 @@ public class EventServiceImpl implements EventService {
 				event.getHour(),
 				event.getDuration(),
 				event.getAssistantsCapacity(),
-				event.getImage());
+				event.getImage(),
+				userService.serializeUserInfoDto(event.getUser())
+				);
 	}
 
 }
