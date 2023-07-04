@@ -25,6 +25,9 @@ public class CreateEventDto {
 
 	@NotEmpty(message = "hour must not be empty")
 	String hour;
+	
+	@NotEmpty(message = "image must not be empty")
+	String image;
 
 	@NotNull(message ="duration must not be empty")
 	Float duration;
@@ -32,10 +35,6 @@ public class CreateEventDto {
 
 	@NotNull(message = "assistantCapacity must not be null")
 	Integer assistantsCapacity;
-
-	@NotNull(message = "userId must not be empty")
-	@Positive()
-	Integer userId;
 
 	@NotNull(message = "categoryId must not be null")
 	@Positive()

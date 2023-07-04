@@ -1,9 +1,14 @@
 package com.nrecinos.backend.models.entities.user;
 
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nrecinos.backend.models.entities.event.Event;
+import com.nrecinos.backend.models.entities.token.Token;
 import com.nrecinos.backend.models.entities.users_roles_role.UsersXRoles;
 import com.nrecinos.backend.models.entities.voucher.Voucher;
 
@@ -22,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "user", schema = "public")
-public class User {
+public class User implements UserDetails{
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,6 +66,10 @@ public class User {
 	@JsonIgnore
 	private List<Voucher> vouchers;
 
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Token> tokens;
+
 	public User(String name, String lastname, String phoneNumber, String email, String password, String username, Boolean isVerified) {
 		super();
 		this.name = name;
@@ -70,5 +79,35 @@ public class User {
 		this.password = password;
 		this.username = username;
 		this.isVerified = isVerified;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return this.isVerified;
 	}
 }

@@ -1,6 +1,5 @@
 package com.nrecinos.backend.services.implementations;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +14,32 @@ import com.nrecinos.backend.models.entities.user.User;
 import com.nrecinos.backend.repositories.CategoryRepository;
 import com.nrecinos.backend.repositories.EventRepository;
 import com.nrecinos.backend.services.EventService;
+import com.nrecinos.backend.services.UserService;
 
 @Service
 public class EventServiceImpl implements EventService {
 	@Autowired
-	private EventRepository eventRepository;
+	private UserService userService;
 	
+	@Autowired
+	private EventRepository eventRepository;
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
 	@Override
 	public EventInfoDto create(CreateEventDto createEventDto, User user, Category category) {
-		Event event = new Event(createEventDto.getTitle(), createEventDto.getDescription(), createEventDto.getDate(), createEventDto.getHour(), createEventDto.getDuration(), 0, createEventDto.getAssistantsCapacity(), user, category, true);
+		Event event = new Event(
+				createEventDto.getTitle(),
+				createEventDto.getDescription(),
+				createEventDto.getDate(),
+				createEventDto.getHour(),
+				createEventDto.getDuration(),
+				0,
+				createEventDto.getAssistantsCapacity(),
+				user,
+				category,
+				true,
+				createEventDto.getImage());
 		Event savedEvent = this.save(event);
 		return this.serializeEvent(savedEvent);
 	}
@@ -38,8 +51,14 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<EventInfoDto> findAll() {
-		List<Event> events = eventRepository.findAll();
+	public List<EventInfoDto> findAll(String status) {
+		List<Event> events = null;
+		if (status.equals("all")) {
+			events = eventRepository.findAll();	
+		} else {
+			Boolean isVerified = status.equals("active") ? true : false;
+			events = eventRepository.findAllByIsActive(isVerified); 
+		}
 		List<EventInfoDto> eventsSerialized = events.stream()
 				.map(event -> this.serializeEvent(event))
 				.toList();
@@ -77,6 +96,9 @@ public class EventServiceImpl implements EventService {
         if (updateEventDto.getAssistantsCapacity() != null) {
             eventToUpdate.setAssistantsCapacity(updateEventDto.getAssistantsCapacity());
         }
+        if (updateEventDto.getImage() != null) {
+        	eventToUpdate.setImage(updateEventDto.getImage());
+        }
         if (updateEventDto.getCategoryId() != null) {
         	Category category = categoryRepository.findOneById(updateEventDto.getCategoryId());
         	eventToUpdate.setCategory(category);
@@ -99,7 +121,17 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public EventInfoDto serializeEvent(Event event) {
-		return new EventInfoDto(event.getId(), event.getTitle(), event.getDescription(), event.getDate(), event.getHour(),event.getDuration(),event.getAssistantsCapacity());
+		return new EventInfoDto(
+				event.getId(),
+				event.getTitle(),
+				event.getDescription(),
+				event.getDate(),
+				event.getHour(),
+				event.getDuration(),
+				event.getAssistantsCapacity(),
+				event.getImage(),
+				userService.serializeUserInfoDto(event.getUser())
+				);
 	}
 
 }

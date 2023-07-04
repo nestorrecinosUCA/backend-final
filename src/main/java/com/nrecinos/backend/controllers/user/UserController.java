@@ -21,7 +21,6 @@ import com.nrecinos.backend.models.dtos.user.UpdatePasswordDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserDto;
 import com.nrecinos.backend.models.dtos.user.UpdateUserRoleDto;
 import com.nrecinos.backend.models.dtos.user.UserInfoDto;
-import com.nrecinos.backend.models.entities.user.User;
 import com.nrecinos.backend.services.UserService;
 
 import jakarta.validation.Valid;
@@ -34,7 +33,7 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	@GetMapping("/")
+	@GetMapping("")
 	ResponseEntity<?> getAllUsers() {
 		List<UserInfoDto> users = userService.findAll();
 		return new ResponseEntity<>(users, HttpStatus.OK);
@@ -49,7 +48,7 @@ public class UserController {
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 	
-	@PostMapping("/")
+	@PostMapping("")
 	ResponseEntity<?> create(@RequestBody @Valid CreateUserDto createUserDto, BindingResult validations) {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
@@ -127,7 +126,7 @@ public class UserController {
 		}
 		return new ResponseEntity<>(updateMessage, HttpStatus.NOT_FOUND);
 	}
-  
+
 	@DeleteMapping("/{id}")
 	ResponseEntity<?> delete(@PathVariable(name = "id") Integer id) {
 		UserInfoDto existingUser = userService.findOne(id);
