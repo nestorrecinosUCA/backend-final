@@ -65,7 +65,7 @@ public class User implements UserDetails{
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Voucher> vouchers;
-	
+
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Token> tokens;

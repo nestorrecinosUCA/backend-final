@@ -23,7 +23,7 @@ public class UsersXRoles {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@ToString.Exclude
 	private User user;

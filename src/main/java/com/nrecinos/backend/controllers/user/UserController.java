@@ -126,7 +126,7 @@ public class UserController {
 		}
 		return new ResponseEntity<>(updateMessage, HttpStatus.NOT_FOUND);
 	}
-	
+
 	@DeleteMapping("/{id}")
 	ResponseEntity<?> delete(@PathVariable(name = "id") Integer id) {
 		UserInfoDto existingUser = userService.findOne(id);

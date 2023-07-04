@@ -66,7 +66,7 @@ public class Event {
 	
 	@Column(name = "image")
 	private String image;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@ToString.Exclude
 	private User user;
