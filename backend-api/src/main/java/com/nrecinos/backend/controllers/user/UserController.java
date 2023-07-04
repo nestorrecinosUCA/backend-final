@@ -33,7 +33,7 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	@GetMapping("/")
+	@GetMapping("")
 	ResponseEntity<?> getAllUsers() {
 		List<UserInfoDto> users = userService.findAll();
 		return new ResponseEntity<>(users, HttpStatus.OK);
@@ -48,7 +48,7 @@ public class UserController {
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 	
-	@PostMapping("/")
+	@PostMapping("")
 	ResponseEntity<?> create(@RequestBody @Valid CreateUserDto createUserDto, BindingResult validations) {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
