@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService{
 	@Override
 	public User signIn(String identificator, String password) {
 		System.out.println(identificator);
-		User user = userRepository.findByUsernameOrEmail(identificator, identificator);
+		User user = userRepository.findByUsernameOrEmailAndIsVerified(identificator, identificator,  true);
 		if (user != null) {			
 			Boolean passwordMatches = this.comparePassword(password, user.getPassword());
 			if (passwordMatches == true) {

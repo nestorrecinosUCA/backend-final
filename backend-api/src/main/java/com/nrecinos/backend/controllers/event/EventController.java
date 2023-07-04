@@ -1,5 +1,6 @@
 package com.nrecinos.backend.controllers.event;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,14 @@ import com.nrecinos.backend.models.dtos.event.UpdateEventDto;
 import com.nrecinos.backend.models.dtos.general.MessageDto;
 import com.nrecinos.backend.models.entities.category.Category;
 import com.nrecinos.backend.models.entities.event.Event;
+import com.nrecinos.backend.models.entities.role.UserRoles;
 import com.nrecinos.backend.models.entities.user.User;
 import com.nrecinos.backend.repositories.CategoryRepository;
 import com.nrecinos.backend.repositories.EventRepository;
 import com.nrecinos.backend.repositories.UserRepository;
 import com.nrecinos.backend.services.EventService;
 import com.nrecinos.backend.utils.JWTTools;
+import com.nrecinos.backend.utils.RoleValidator;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -48,6 +51,8 @@ public class EventController {
 	
 	@Autowired
 	private JWTTools jwtTools;
+	@Autowired
+	private RoleValidator roleValidator;
 		
 	@GetMapping("")
 	ResponseEntity<?> getAll(@RequestParam(defaultValue = "all", name = "status") String status) {
@@ -69,13 +74,15 @@ public class EventController {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(validations.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}
-
+		List<String> roles = new ArrayList<String>();
+		roles.add(UserRoles.ADMIN.getDisplayName());
+		Boolean rolePermitted = roleValidator.validateRoles(roles, request);
+		if (rolePermitted == false) {
+			return new ResponseEntity<>(new MessageDto("Forbidden"), HttpStatus.FORBIDDEN);
+		}
 		String token = jwtTools.extractTokenFromRequest(request);
 		String username = jwtTools.getUsernameFrom(token);
 		User user = userRepository.findByUsernameOrEmail(username, username);
-		if (user == null) {
-			return new ResponseEntity<>(new MessageDto("User not found"), HttpStatus.NOT_FOUND);
-		}
 		Category category = categoryRepository.findOneById(createEventDto.getCategoryId());
 		if (category == null) {
 			return new ResponseEntity<>(new MessageDto("Category not found"), HttpStatus.NOT_FOUND);

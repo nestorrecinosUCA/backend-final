@@ -68,7 +68,6 @@ public class AuthController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody @Valid LoginDto info, BindingResult validations){
-		System.out.println("TEEEEEST " + info.getUsername());
 		User user = authService.signIn(info.getUsername(), info.getPassword());
 		if (user == null) {
 			return new ResponseEntity<>("User Not Found", HttpStatus.NOT_FOUND);
